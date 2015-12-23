@@ -47,6 +47,7 @@ The body of the advice is in BODY."
                     ,@body))
                commands)))
 
+;;;###autoload
 (defun super-save-initialize ()
   (progn
     ;; advise all window switching functions
