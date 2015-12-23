@@ -60,4 +60,7 @@ The body of the advice is in BODY."
 
     (when (version<= "24.4" emacs-version)
       (add-hook 'focus-out-hook #'super-save-command))))
+
+(provide 'super-save)
+
 ;;; super-save.el ends here
