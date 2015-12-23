@@ -34,7 +34,7 @@ If the installation doesn't work try refreshing the package list:
 <kbd>M-x package-refresh-contents</kbd>
 
 Add the following to your Emacs config to enable
-`super-save` for Clojure source buffers:
+`super-save`:
 
 ```el
 (super-save-initialize)
