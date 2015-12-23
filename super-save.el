@@ -47,6 +47,7 @@ The body of the advice is in BODY."
                     ,@body))
                commands)))
 
+;;;###autoload
 (defun super-save-initialize ()
   (progn
     ;; advise all window switching functions
@@ -60,4 +61,7 @@ The body of the advice is in BODY."
 
     (when (version<= "24.4" emacs-version)
       (add-hook 'focus-out-hook #'super-save-command))))
+
+(provide 'super-save)
+
 ;;; super-save.el ends here
