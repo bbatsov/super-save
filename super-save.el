@@ -31,7 +31,7 @@
 ;;; Code:
 
 (defun super-save-command ()
-  "Save the current buffer if `prelude-auto-save' is not nil."
+  "Save the current buffer if needed."
   (when (and buffer-file-name
              (buffer-modified-p (current-buffer))
              (file-writable-p buffer-file-name))
@@ -60,4 +60,6 @@ The body of the advice is in BODY."
 
     (when (version<= "24.4" emacs-version)
       (add-hook 'focus-out-hook #'super-save-command))))
+
+(provide 'super-save)
 ;;; super-save.el ends here
