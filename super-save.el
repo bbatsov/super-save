@@ -29,6 +29,16 @@
 ;; super-save saves buffers when they lose focus. 
 ;;
 ;;; Code:
+(defgroup super-save nil
+  "Smart-saving of buffers."
+  :group 'tools
+  :group 'convenience)
+
+(defcustom super-save-triggers
+  '(switch-to-buffer other-window windmove-up windmove-down windmove-left windmove-right)
+  "A list of commands which would trigger `super-save-command'."
+  :group 'super-save
+  :type '(repeat symbol))
 
 (defun super-save-command ()
   "Save the current buffer if needed."
@@ -37,24 +47,18 @@
              (file-writable-p buffer-file-name))
     (save-buffer)))
 
-(defmacro super-save-advise-commands (advice-name commands class &rest body)
-  "Apply advice named ADVICE-NAME to multiple COMMANDS.
-
-The body of the advice is in BODY."
+(defmacro super-save-advise-trigger-commands ()
+  "Apply super-save advice to the commands listed in `super-save-triggers'."
   `(progn
      ,@(mapcar (lambda (command)
-                 `(defadvice ,command (,class ,(intern (concat (symbol-name command) "-" advice-name)) activate)
-                    ,@body))
-               commands)))
+                 `(defadvice ,command (before ,(intern (concat (symbol-name command) "-super-save")) activate)
+                    (super-save-command)))
+               super-save-triggers)))
 
 (defun super-save-initialize ()
   (progn
     ;; advise all window switching functions
-    (super-save-advise-commands
-     "super-save"
-     (switch-to-buffer other-window windmove-up windmove-down windmove-left windmove-right)
-     before
-     (super-save-command))
+    (super-save-advise-trigger-commands)
 
     (add-hook 'mouse-leave-buffer-hook #'super-save-command)
 
