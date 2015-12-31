@@ -55,6 +55,7 @@
                     (super-save-command)))
                super-save-triggers)))
 
+;;;###autoload
 (defun super-save-initialize ()
   (progn
     ;; advise all window switching functions
