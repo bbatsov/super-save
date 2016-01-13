@@ -34,11 +34,14 @@
   :group 'tools
   :group 'convenience)
 
+(defvar super-save-mode-map (make-sparse-keymap)
+  "super-save mode's keymap.")
+
 (defcustom super-save-triggers
-  '(switch-to-buffer other-window windmove-up windmove-down windmove-left windmove-right)
+  '("switch-to-buffer" "other-window" "windmove-up" "windmove-down" "windmove-left" "windmove-right")
   "A list of commands which would trigger `super-save-command'."
   :group 'super-save
-  :type '(repeat symbol))
+  :type '(repeat string))
 
 (defun super-save-command ()
   "Save the current buffer if needed."
@@ -47,23 +50,53 @@
              (file-writable-p buffer-file-name))
     (save-buffer)))
 
-(defmacro super-save-advise-trigger-commands ()
+(defun super-save-command-advice (orig-fun &rest args)
+  "Save the current buffer if needed."
+  (super-save-command))
+
+(defun super-save-advise-trigger-commands ()
   "Apply super-save advice to the commands listed in `super-save-triggers'."
-  `(progn
-     ,@(mapcar (lambda (command)
-                 `(defadvice ,command (before ,(intern (concat (symbol-name command) "-super-save")) activate)
-                    (super-save-command)))
-               super-save-triggers)))
+  (mapc (lambda (command)
+          (advice-add (intern command) :after #'super-save-command-advice))
+        super-save-triggers))
+
+(defun super-save-remove-advice-from-trigger-commands ()
+  "Remove super-save advice from to the commands listed in `super-save-triggers'."
+  (mapc (lambda (command)
+          (advice-remove (intern command) #'super-save-command-advice))
+        super-save-triggers))
 
 (defun super-save-initialize ()
-  (progn
-    ;; advise all window switching functions
-    (super-save-advise-trigger-commands)
+  ;; advise all window switching functions
+  (super-save-advise-trigger-commands)
 
-    (add-hook 'mouse-leave-buffer-hook #'super-save-command)
+  (add-hook 'mouse-leave-buffer-hook #'super-save-command)
 
-    (when (version<= "24.4" emacs-version)
-      (add-hook 'focus-out-hook #'super-save-command))))
+  (when (version<= "24.4" emacs-version)
+    (add-hook 'focus-out-hook #'super-save-command)))
+
+(defun super-save-stop ()
+  ;; advise all window switching functions
+  (super-save-remove-advice-from-trigger-commands)
+
+  (remove-hook 'mouse-leave-buffer-hook #'super-save-command)
+
+  (when (version<= "24.4" emacs-version)
+    (remove-hook 'focus-out-hook #'super-save-command)))
+
+;;;###autoload
+(define-minor-mode super-save-mode
+  "A minor mode that saves your Emacs buffers when they lose focus."
+  :lighter " super-save"
+  :keymap super-save-mode-map
+  :group 'super-save
+  (cond
+   (super-save-mode (super-save-initialize))
+   (t (super-save-stop))))
+
+;; define global minor mode
+;;;###autoload
+(define-globalized-minor-mode global-super-save-mode super-save-mode super-save-mode)
 
 (provide 'super-save)
 ;;; super-save.el ends here
