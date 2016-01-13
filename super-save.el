@@ -52,7 +52,7 @@
     (save-buffer)))
 
 (defun super-save-command-advice (orig-fun &rest args)
-  "Save the current buffer if needed."
+  "A simple wrapper around `super-save-command' that's advice-friendly."
   (super-save-command))
 
 (defun super-save-advise-trigger-commands ()
@@ -68,13 +68,13 @@
         super-save-triggers))
 
 (defun super-save-initialize ()
-  ;; advise all window switching functions
+  "Setup super-save's advices and hooks."
   (super-save-advise-trigger-commands)
   (add-hook 'mouse-leave-buffer-hook #'super-save-command)
   (add-hook 'focus-out-hook #'super-save-command))
 
 (defun super-save-stop ()
-  ;; advise all window switching functions
+  "Cleanup super-save's advices and hooks."
   (super-save-remove-advice-from-trigger-commands)
   (remove-hook 'mouse-leave-buffer-hook #'super-save-command)
   (remove-hook 'focus-out-hook #'super-save-command))
