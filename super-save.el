@@ -69,20 +69,14 @@
 (defun super-save-initialize ()
   ;; advise all window switching functions
   (super-save-advise-trigger-commands)
-
   (add-hook 'mouse-leave-buffer-hook #'super-save-command)
-
-  (when (version<= "24.4" emacs-version)
-    (add-hook 'focus-out-hook #'super-save-command)))
+  (add-hook 'focus-out-hook #'super-save-command))
 
 (defun super-save-stop ()
   ;; advise all window switching functions
   (super-save-remove-advice-from-trigger-commands)
-
   (remove-hook 'mouse-leave-buffer-hook #'super-save-command)
-
-  (when (version<= "24.4" emacs-version)
-    (remove-hook 'focus-out-hook #'super-save-command)))
+  (remove-hook 'focus-out-hook #'super-save-command))
 
 ;;;###autoload
 (define-minor-mode super-save-mode
