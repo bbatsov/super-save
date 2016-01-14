@@ -85,13 +85,10 @@
   :lighter " super-save"
   :keymap super-save-mode-map
   :group 'super-save
+  :global t
   (cond
    (super-save-mode (super-save-initialize))
    (t (super-save-stop))))
-
-;; define global minor mode
-;;;###autoload
-(define-globalized-minor-mode global-super-save-mode super-save-mode super-save-mode)
 
 (provide 'super-save)
 ;;; super-save.el ends here

@@ -37,7 +37,7 @@ Add the following to your Emacs config to enable
 `super-save`:
 
 ```el
-(global-super-save-mode +1)
+(super-save-mode +1)
 ```
 
 ## License
