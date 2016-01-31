@@ -33,11 +33,27 @@ If the installation doesn't work try refreshing the package list:
 
 <kbd>M-x package-refresh-contents</kbd>
 
+## Usage
+
 Add the following to your Emacs config to enable
 `super-save`:
 
 ```el
 (super-save-mode +1)
+```
+
+If you want to enable the additional feature of auto-saving buffers
+when Emacs is idle, add the following as well:
+
+```el
+(setq super-save-auto-save-when-idle t)
+```
+
+At this point you can probably switch off the built-in
+`auto-save-mode` (unless you really care about its backups):
+
+```el
+(setq auto-save-default nil)
 ```
 
 ## License

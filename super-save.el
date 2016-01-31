@@ -27,7 +27,7 @@
 
 ;;; Commentary:
 ;;
-;; super-save saves buffers when they lose focus. 
+;; super-save saves buffers when they lose focus.
 ;;
 ;;; Code:
 (defgroup super-save nil
@@ -44,12 +44,27 @@
   :group 'super-save
   :type '(repeat string))
 
+(defcustom super-save-auto-save-when-idle nil
+  "Save current buffer automatically when Emacs is idle."
+  :group 'super-save
+  :type 'boolean)
+
+(defcustom super-save-idle-duration 5
+  "The number of seconds Emacs has to be idle, before auto-saving the current buffer.
+See `super-save-auto-save-when-idle'."
+  :group 'super-save
+  :type 'integer)
+
 (defun super-save-command ()
   "Save the current buffer if needed."
   (when (and buffer-file-name
              (buffer-modified-p (current-buffer))
              (file-writable-p buffer-file-name))
     (save-buffer)))
+
+(defvar super-save-idle-timer
+  (when super-save-auto-save-when-idle
+    (run-with-idle-timer super-save-idle-duration t #'super-save-command)))
 
 (defun super-save-command-advice (orig-fun &rest args)
   "A simple wrapper around `super-save-command' that's advice-friendly."
