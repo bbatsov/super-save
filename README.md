@@ -6,7 +6,7 @@
 
 super-save auto-saves your buffers, when certain events happen - e.g. you switch between buffers,
 an Emacs frame loses focus, etc. You can think of it as both something that augments and replaces
-the standard `auto-save-mode`. 
+the standard `auto-save-mode`.
 
 ## Installation
 
@@ -52,6 +52,6 @@ Distributed under the GNU General Public License; type <kbd>C-h C-c</kbd> to vie
 [melpa-package]: http://melpa.org/#/super-save
 [melpa-stable-package]: http://stable.melpa.org/#/super-save
 [COPYING]: http://www.gnu.org/copyleft/gpl.html
-[contributors]: https://github.com/clojure-emacs/super-save/contributors
+[contributors]: https://github.com/bbatsov/super-save/contributors
 [melpa]: http://melpa.org
 [melpa stable]: http://stable.melpa.org
