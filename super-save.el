@@ -73,7 +73,7 @@ See `super-save-auto-save-when-idle'."
 (defun super-save-advise-trigger-commands ()
   "Apply super-save advice to the commands listed in `super-save-triggers'."
   (mapc (lambda (command)
-          (advice-add (intern command) :after #'super-save-command-advice))
+          (advice-add (intern command) :before #'super-save-command-advice))
         super-save-triggers))
 
 (defun super-save-remove-advice-from-trigger-commands ()
