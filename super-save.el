@@ -62,9 +62,7 @@ See `super-save-auto-save-when-idle'."
              (file-writable-p buffer-file-name))
     (save-buffer)))
 
-(defvar super-save-idle-timer
-  (when super-save-auto-save-when-idle
-    (run-with-idle-timer super-save-idle-duration t #'super-save-command)))
+(defvar super-save-idle-timer)
 
 (defun super-save-command-advice (orig-fun &rest args)
   "A simple wrapper around `super-save-command' that's advice-friendly."
@@ -82,15 +80,28 @@ See `super-save-auto-save-when-idle'."
           (advice-remove (intern command) #'super-save-command-advice))
         super-save-triggers))
 
+(defun super-save-initialize-idle-timer ()
+  "Initialize super-save idle timer if `super-save-auto-save-when-idle' is true."
+  (setq super-save-idle-timer
+        (when super-save-auto-save-when-idle
+          (run-with-idle-timer super-save-idle-duration t #'super-save-command))))
+
+(defun super-save-stop-idle-timer ()
+  "Stop super-save idle timer if `super-save-idle-timer' is set."
+  (when super-save-idle-timer
+    (cancel-timer super-save-idle-timer)))
+
 (defun super-save-initialize ()
   "Setup super-save's advices and hooks."
   (super-save-advise-trigger-commands)
+  (super-save-initialize-idle-timer)
   (add-hook 'mouse-leave-buffer-hook #'super-save-command)
   (add-hook 'focus-out-hook #'super-save-command))
 
 (defun super-save-stop ()
   "Cleanup super-save's advices and hooks."
   (super-save-remove-advice-from-trigger-commands)
+  (super-save-stop-idle-timer)
   (remove-hook 'mouse-leave-buffer-hook #'super-save-command)
   (remove-hook 'focus-out-hook #'super-save-command))
 
