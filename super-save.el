@@ -64,7 +64,7 @@ See `super-save-auto-save-when-idle'."
 
 (defvar super-save-idle-timer)
 
-(defun super-save-command-advice (_orig-fun &rest _args)
+(defun super-save-command-advice (&rest _args)
   "A simple wrapper around `super-save-command' that's advice-friendly."
   (super-save-command))
 
