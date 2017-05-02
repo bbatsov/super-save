@@ -91,6 +91,7 @@ See `super-save-auto-save-when-idle'."
   (when super-save-idle-timer
     (cancel-timer super-save-idle-timer)))
 
+;;;###autoload
 (defun super-save-initialize ()
   "Setup super-save's advices and hooks."
   (super-save-advise-trigger-commands)
