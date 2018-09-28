@@ -58,7 +58,7 @@ At this point you can probably switch off the built-in
 
 ## License
 
-Copyright © 2015-2016 Bozhidar Batsov and [contributors][].
+Copyright © 2015-2018 Bozhidar Batsov and [contributors][].
 
 Distributed under the GNU General Public License; type <kbd>C-h C-c</kbd> to view it.
 
