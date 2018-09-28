@@ -44,6 +44,13 @@
   :group 'super-save
   :type '(repeat string))
 
+(defcustom super-save-hook-triggers
+  '(mouse-leave-buffer-hook focus-out-hook)
+  "A list of hooks which would trigger `super-save-command'."
+  :group 'super-save
+  :type '(repeat symbol)
+  :package-version '(super-save . "0.3.0"))
+n
 (defcustom super-save-auto-save-when-idle nil
   "Save current buffer automatically when Emacs is idle."
   :group 'super-save
@@ -102,15 +109,15 @@ See `super-save-auto-save-when-idle'."
   "Setup super-save's advices and hooks."
   (super-save-advise-trigger-commands)
   (super-save-initialize-idle-timer)
-  (add-hook 'mouse-leave-buffer-hook #'super-save-command)
-  (add-hook 'focus-out-hook #'super-save-command))
+  (dolist (hook super-save-hook-triggers)
+    (add-hook hook #'super-save-command)))
 
 (defun super-save-stop ()
   "Cleanup super-save's advices and hooks."
   (super-save-remove-advice-from-trigger-commands)
   (super-save-stop-idle-timer)
-  (remove-hook 'mouse-leave-buffer-hook #'super-save-command)
-  (remove-hook 'focus-out-hook #'super-save-command))
+  (dolist (hook super-save-hook-triggers)
+    (remove-hook hook #'super-save-command)))
 
 ;;;###autoload
 (define-minor-mode super-save-mode
