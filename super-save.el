@@ -51,7 +51,7 @@
   :group 'super-save
   :type '(repeat symbol)
   :package-version '(super-save . "0.3.0"))
-n
+
 (defcustom super-save-auto-save-when-idle nil
   "Save current buffer automatically when Emacs is idle."
   :group 'super-save
