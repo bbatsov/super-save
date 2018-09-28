@@ -55,11 +55,18 @@ See `super-save-auto-save-when-idle'."
   :group 'super-save
   :type 'integer)
 
+(defcustom super-save-remote-files t
+  "Save remote files when t, ignore them otherwise."
+  :group 'super-save
+  :type 'boolean
+  :package-version '(super-save . "0.3.0"))
+
 (defun super-save-command ()
   "Save the current buffer if needed."
   (when (and buffer-file-name
              (buffer-modified-p (current-buffer))
-             (file-writable-p buffer-file-name))
+             (file-writable-p buffer-file-name)
+             (if (file-remote-p buffer-file-name) super-save-remote-files t))
     (save-buffer)))
 
 (defvar super-save-idle-timer)

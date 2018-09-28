@@ -56,6 +56,14 @@ At this point you can probably switch off the built-in
 (setq auto-save-default nil)
 ```
 
+## Configuration
+
+You can turn off `super-save` for remote files like this:
+
+``` el
+(setq super-save-remote-files nil)
+```
+
 ## License
 
 Copyright © 2015-2018 Bozhidar Batsov and [contributors][].
