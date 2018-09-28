@@ -42,7 +42,8 @@
   '("switch-to-buffer" "other-window" "windmove-up" "windmove-down" "windmove-left" "windmove-right" "next-buffer" "previous-buffer")
   "A list of commands which would trigger `super-save-command'."
   :group 'super-save
-  :type '(repeat string))
+  :type '(repeat string)
+  :package-version '(super-save . "0.1.0"))
 
 (defcustom super-save-hook-triggers
   '(mouse-leave-buffer-hook focus-out-hook)
@@ -54,13 +55,15 @@ n
 (defcustom super-save-auto-save-when-idle nil
   "Save current buffer automatically when Emacs is idle."
   :group 'super-save
-  :type 'boolean)
+  :type 'boolean
+  :package-version '(super-save . "0.2.0"))
 
 (defcustom super-save-idle-duration 5
   "The number of seconds Emacs has to be idle, before auto-saving the current buffer.
 See `super-save-auto-save-when-idle'."
   :group 'super-save
-  :type 'integer)
+  :type 'integer
+  :package-version '(super-save . "0.2.0"))
 
 (defcustom super-save-remote-files t
   "Save remote files when t, ignore them otherwise."
