@@ -76,6 +76,20 @@ At this point you can probably switch off the built-in
 
 ## Configuration
 
+super-save will save files on command (e.g. `switch-to-buffer`) and
+hook triggers (e.g. `focus-out-hook`).
+
+Both of those are configurable via `super-save-triggers` and
+`super-save-hook-triggers`. Here's a couple of examples:
+
+```el
+;; add integration with ace-window
+(add-to-list 'super-save-triggers 'ace-window)
+
+;; save on find-file
+(add-to-list 'super-save-hook-triggers 'find-file-hook)
+```
+
 You can turn off `super-save` for remote files like this:
 
 ``` el
