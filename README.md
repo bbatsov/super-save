@@ -33,6 +33,24 @@ If the installation doesn't work try refreshing the package list:
 
 <kbd>M-x package-refresh-contents</kbd>
 
+### use-package
+
+If you're into `use-package` you can use the following snippet:
+
+```el
+(use-package super-save
+  :ensure t
+  :config
+  (super-save-mode +1))
+```
+
+### Emacs Prelude
+
+super-save started its life as the extraction of a similar functionality I had
+originally developed for [Emacs
+Prelude](https://github.com/bbatsov/prelude) and the package is bundled
+with Prelude.
+
 ## Usage
 
 Add the following to your Emacs config to enable
