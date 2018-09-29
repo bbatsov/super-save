@@ -1,0 +1,24 @@
+# Changelog
+
+## master (unreleased)
+
+### New features
+
+* [#16](https://github.com/bbatsov/crux/issues/16): Make this of hook triggers customizable (see `super-save-hook-triggers`).
+* [#18](https://github.com/bbatsov/crux/issues/18): Make it possible to disable super-save for remote files (see `super-save-remote-files`).
+
+### Changes
+
+* Make `super-save-triggers` a list of symbols (it used to be a list of strings).
+* Trigger super-save on `next-buffer` and `previous-buffer`.
+
+## 0.2.0 (2016-02-21)
+
+### New features
+
+* [#3](https://github.com/bbatsov/crux/issues/3): Turn super-save into a global minor-mode (`super-save-mode`).
+* Add some functionality for auto-saving buffers when Emacs is idle (disabled by default).
+
+## 0.1.0 (2016-02-11)
+
+Initial release. Most of super-save was an extraction of a similar functionality I had originally developed for [Emacs Prelude](https://github.com/bbatsov/prelude).
