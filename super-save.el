@@ -39,10 +39,10 @@
   "super-save mode's keymap.")
 
 (defcustom super-save-triggers
-  '("switch-to-buffer" "other-window" "windmove-up" "windmove-down" "windmove-left" "windmove-right" "next-buffer" "previous-buffer")
+  '(switch-to-buffer other-window windmove-up windmove-down windmove-left windmove-right next-buffer previous-buffer)
   "A list of commands which would trigger `super-save-command'."
   :group 'super-save
-  :type '(repeat string)
+  :type '(repeat symbol)
   :package-version '(super-save . "0.1.0"))
 
 (defcustom super-save-hook-triggers
@@ -88,13 +88,13 @@ See `super-save-auto-save-when-idle'."
 (defun super-save-advise-trigger-commands ()
   "Apply super-save advice to the commands listed in `super-save-triggers'."
   (mapc (lambda (command)
-          (advice-add (intern command) :before #'super-save-command-advice))
+          (advice-add command :before #'super-save-command-advice))
         super-save-triggers))
 
 (defun super-save-remove-advice-from-trigger-commands ()
   "Remove super-save advice from to the commands listed in `super-save-triggers'."
   (mapc (lambda (command)
-          (advice-remove (intern command) #'super-save-command-advice))
+          (advice-remove command #'super-save-command-advice))
         super-save-triggers))
 
 (defun super-save-initialize-idle-timer ()
