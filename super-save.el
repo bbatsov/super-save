@@ -71,7 +71,7 @@ See `super-save-auto-save-when-idle'."
   :type 'boolean
   :package-version '(super-save . "0.3.0"))
 
-(defcustom super-save-all-buffers t
+(defcustom super-save-all-buffers nil
   "Save all buffers when t, save only current buffer otherwise"
   :group 'super-save
   :type 'boolean)
