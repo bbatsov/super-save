@@ -71,13 +71,31 @@ See `super-save-auto-save-when-idle'."
   :type 'boolean
   :package-version '(super-save . "0.3.0"))
 
+(defcustom super-save-all-buffers t
+  "Save all buffers when t, save only current buffer otherwise"
+  :group 'super-save
+  :type 'boolean)
+
+(defcustom super-save-silently t
+  "Silently save when t, give message while saving otherwise"
+  :group 'super-save
+  :type 'boolean)
+
 (defun super-save-command ()
-  "Save the current buffer if needed."
-  (when (and buffer-file-name
-             (buffer-modified-p (current-buffer))
-             (file-writable-p buffer-file-name)
-             (if (file-remote-p buffer-file-name) super-save-remote-files t))
-    (save-buffer)))
+  "Save the buffer if needed."
+  (let ((buffer-to-save (if super-save-all-buffers
+                            (buffer-list)
+                          (list (current-buffer)))))
+    (save-excursion
+      (dolist (buf buffer-to-save)
+        (set-buffer buf)
+        (when (and buffer-file-name
+                   (buffer-modified-p (current-buffer))
+                   (file-writable-p buffer-file-name)
+                   (if (file-remote-p buffer-file-name) super-save-remote-files t))
+          (if super-save-silently
+              (with-temp-message "" (save-buffer))
+            (save-buffer)))))))
 
 (defvar super-save-idle-timer)
 
