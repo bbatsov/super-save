@@ -76,11 +76,6 @@ See `super-save-auto-save-when-idle'."
   :group 'super-save
   :type 'boolean)
 
-(defcustom super-save-silently t
-  "Silently save when t, give message while saving otherwise"
-  :group 'super-save
-  :type 'boolean)
-
 (defun super-save-command ()
   "Save the buffer if needed."
   (let ((buffer-to-save (if super-save-all-buffers
@@ -93,9 +88,7 @@ See `super-save-auto-save-when-idle'."
                    (buffer-modified-p (current-buffer))
                    (file-writable-p buffer-file-name)
                    (if (file-remote-p buffer-file-name) super-save-remote-files t))
-          (if super-save-silently
-              (with-temp-message "" (save-buffer))
-            (save-buffer)))))))
+          (save-buffer))))))
 
 (defvar super-save-idle-timer)
 
