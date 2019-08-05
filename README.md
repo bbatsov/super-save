@@ -96,6 +96,13 @@ You can turn off `super-save` for remote files like this:
 (setq super-save-remote-files nil)
 ```
 
+Sometimes you might want to exclude specific files from super-save. You can
+achieve this via `super-save-exclude`, for example:
+
+``` el
+(setq super-save-exclude '(".gpg"))
+```
+
 ## License
 
 Copyright © 2015-2018 Bozhidar Batsov and [contributors][].
