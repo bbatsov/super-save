@@ -1,6 +1,6 @@
 ;;; super-save.el --- Auto-save buffers, based on your activity. -*- lexical-binding: t -*-
 
-;; Copyright © 2015-2018 Bozhidar Batsov <bozhidar@batsov.com>
+;; Copyright © 2015-2020 Bozhidar Batsov <bozhidar@batsov.com>
 
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/super-save
