@@ -57,6 +57,7 @@
   :group 'super-save
   :type 'boolean
   :package-version '(super-save . "0.2.0"))
+(make-variable-buffer-local 'super-save-auto-save-when-idle)
 
 (defcustom super-save-idle-duration 5
   "The number of seconds Emacs has to be idle, before auto-saving the current buffer.
@@ -89,12 +90,13 @@ When a buffer-file-name matches any of the regexps it is ignored."
             checks (cdr checks)))
     keepit))
 
-(defun super-save-command ()
+(defun super-save-command (&rest idle-save)
   "Save the current buffer if needed."
   (when (and buffer-file-name
              (buffer-modified-p (current-buffer))
              (file-writable-p buffer-file-name)
              (if (file-remote-p buffer-file-name) super-save-remote-files t)
+             (if idle-save super-save-auto-save-when-idle t)
              (super-save-include-p buffer-file-name))
     (save-buffer)))
 
@@ -120,7 +122,7 @@ When a buffer-file-name matches any of the regexps it is ignored."
   "Initialize super-save idle timer if `super-save-auto-save-when-idle' is true."
   (setq super-save-idle-timer
         (when super-save-auto-save-when-idle
-          (run-with-idle-timer super-save-idle-duration t #'super-save-command))))
+          (run-with-idle-timer super-save-idle-duration t #'super-save-command t))))
 
 (defun super-save-stop-idle-timer ()
   "Stop super-save idle timer if `super-save-idle-timer' is set."
