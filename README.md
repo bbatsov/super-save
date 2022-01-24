@@ -103,6 +103,12 @@ achieve this via `super-save-exclude`, for example:
 (setq super-save-exclude '(".gpg"))
 ```
 
+You can add predicate to `super-save-predicates`, this predicates must not take arguments and return nil, when current buffer shouldn't save. If predicate don't know needle of save file, then predicate must return t. Folowing example stop `super-save`, when current file in Markdown mode:
+```elisp
+(add-to-list 'super-save-predicates (lambda ()
+                                        (not (eq major-mode 'markdown-mode))))
+```
+
 ## License
 
 Copyright © 2015-2020 Bozhidar Batsov and [contributors][].
