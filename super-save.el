@@ -31,11 +31,12 @@
 ;;
 ;;; Code:
 (defgroup super-save nil
-    "Smart-saving of buffers."
-    :group 'tools
-    :group 'convenience)
+  "Smart-saving of buffers."
+  :group 'tools
+  :group 'convenience)
 
-(defvar super-save-mode-map (make-sparse-keymap)
+(defvar super-save-mode-map
+  (make-sparse-keymap)
   "super-save mode's keymap.")
 
 (defcustom super-save-triggers
@@ -91,8 +92,7 @@ When a buffer-file-name matches any of the regexps it is ignored."
     (lambda () (file-writable-p buffer-file-name))
     (lambda () (< (buffer-size) super-save-max-buffer-size))
     (lambda ()
-        (if (file-remote-p buffer-file-name)
-            super-save-remote-files t))
+      (if (file-remote-p buffer-file-name) super-save-remote-files t))
     (lambda () (super-save-include-p buffer-file-name)))
   "Predicates, which return nil, when current buffer dont't need to save.
 Predicates not take arguments, if predicate.  If predicate don't know about
@@ -102,86 +102,88 @@ need this buffer to super-save or not, then its must return t."
   :package-version '(super-save . "0.4.0"))
 
 (defun super-save-include-p (filename)
-    "Return non-nil if FILENAME doesn't match any of the `super-save-exclude'."
-    (let ((checks super-save-exclude)
-          (keepit t))
-        (while (and checks keepit)
-            (setq keepit (not (ignore-errors
-                                  (if (stringp (car checks))
-                                      (string-match (car checks) filename))))
-                  checks (cdr checks)))
-        keepit))
+  "Return non-nil if FILENAME doesn't match any of the `super-save-exclude'."
+  (let ((checks super-save-exclude)
+        (keepit t))
+    (while (and checks keepit)
+      (setq keepit
+            (not (ignore-errors
+                   (if (stringp (car checks))
+                       (string-match (car checks) filename))))
+            checks
+            (cdr checks)))
+    keepit))
 
 (defun super-save-p ()
-    "Return nil, when current buffer not need to save.
+  "Return nil, when current buffer not need to save.
 Otherwise return t.  This function use variable `super-save-predicates'"
-    (let ((preds super-save-predicates)
-          (save-flag t)
-          current-pred)
-        (while (and save-flag preds)
-            (setq current-pred (car preds))
-            (setq save-flag (funcall current-pred))
-            (setq preds (cdr preds)))
-        save-flag))
+  (let ((preds super-save-predicates)
+        (save-flag t)
+        current-pred)
+    (while (and save-flag preds)
+      (setq current-pred (car preds))
+      (setq save-flag (funcall current-pred))
+      (setq preds (cdr preds)))
+    save-flag))
 
 (defun super-save-command ()
-    "Save the current buffer if needed."
-    (when (super-save-p)
-        (save-buffer)))
+  "Save the current buffer if needed."
+  (when (super-save-p) (save-buffer)))
 
 (defvar super-save-idle-timer)
 
 (defun super-save-command-advice (&rest _args)
-    "A simple wrapper around `super-save-command' that's advice-friendly."
-    (super-save-command))
+  "A simple wrapper around `super-save-command' that's advice-friendly."
+  (super-save-command))
 
 (defun super-save-advise-trigger-commands ()
-    "Apply super-save advice to the commands listed in `super-save-triggers'."
-    (mapc (lambda (command)
-              (advice-add command :before #'super-save-command-advice))
-          super-save-triggers))
+  "Apply super-save advice to the commands listed in `super-save-triggers'."
+  (mapc
+   (lambda (command)
+     (advice-add command :before #'super-save-command-advice))
+   super-save-triggers))
 
 (defun super-save-remove-advice-from-trigger-commands ()
-    "Remove super-save advice from to the commands listed in `super-save-triggers'."
-    (mapc (lambda (command)
-              (advice-remove command #'super-save-command-advice))
-          super-save-triggers))
+  "Remove super-save advice from to the commands listed in `super-save-triggers'."
+  (mapc
+   (lambda (command)
+     (advice-remove command #'super-save-command-advice))
+   super-save-triggers))
 
 (defun super-save-initialize-idle-timer ()
-    "Initialize super-save idle timer if `super-save-auto-save-when-idle' is true."
-    (setq super-save-idle-timer
-          (when super-save-auto-save-when-idle
-              (run-with-idle-timer super-save-idle-duration t #'super-save-command))))
+  "Initialize super-save idle timer if `super-save-auto-save-when-idle' is true."
+  (setq super-save-idle-timer
+        (when super-save-auto-save-when-idle
+          (run-with-idle-timer super-save-idle-duration t #'super-save-command))))
 
 (defun super-save-stop-idle-timer ()
-    "Stop super-save idle timer if `super-save-idle-timer' is set."
-    (when super-save-idle-timer
-        (cancel-timer super-save-idle-timer)))
+  "Stop super-save idle timer if `super-save-idle-timer' is set."
+  (when super-save-idle-timer (cancel-timer super-save-idle-timer)))
 
 (defun super-save-initialize ()
-    "Setup super-save's advices and hooks."
-    (super-save-advise-trigger-commands)
-    (super-save-initialize-idle-timer)
-    (dolist (hook super-save-hook-triggers)
-        (add-hook hook #'super-save-command)))
+  "Setup super-save's advices and hooks."
+  (super-save-advise-trigger-commands)
+  (super-save-initialize-idle-timer)
+  (dolist (hook super-save-hook-triggers)
+    (add-hook hook #'super-save-command)))
 
 (defun super-save-stop ()
-    "Cleanup super-save's advices and hooks."
-    (super-save-remove-advice-from-trigger-commands)
-    (super-save-stop-idle-timer)
-    (dolist (hook super-save-hook-triggers)
-        (remove-hook hook #'super-save-command)))
+  "Cleanup super-save's advices and hooks."
+  (super-save-remove-advice-from-trigger-commands)
+  (super-save-stop-idle-timer)
+  (dolist (hook super-save-hook-triggers)
+    (remove-hook hook #'super-save-command)))
 
 ;;;###autoload
 (define-minor-mode super-save-mode
     "A minor mode that saves your Emacs buffers when they lose focus."
-    :lighter " super-save"
-    :keymap super-save-mode-map
-    :group 'super-save
-    :global t
-    (cond
-      (super-save-mode (super-save-initialize))
-      (t (super-save-stop))))
+  :lighter " super-save"
+  :keymap super-save-mode-map
+  :group 'super-save
+  :global t
+  (cond
+    (super-save-mode (super-save-initialize))
+    (t (super-save-stop))))
 
 (provide 'super-save)
 ;;; super-save.el ends here
