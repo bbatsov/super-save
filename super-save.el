@@ -96,9 +96,9 @@ Set to nil to disable."
     (lambda ()
       (if (file-remote-p buffer-file-name) super-save-remote-files t))
     (lambda () (super-save-include-p buffer-file-name)))
-  "Predicates, which return nil, when current buffer dont't need to save.
-Predicates not take arguments, if predicate.  If predicate don't know about
-need this buffer to super-save or not, then its must return t."
+  "Predicates, which return nil, when current buffer doesn't need to be saved.
+Predicate functions don't take any arguments.  If a predicate doesn't know
+whether this buffer needs to be super-saved or not, then it must return t."
   :group 'super-save
   :type 'integer
   :package-version '(super-save . "0.4.0"))
@@ -117,8 +117,10 @@ need this buffer to super-save or not, then its must return t."
     keepit))
 
 (defun super-save-p ()
-  "Return nil, when current buffer not need to save.
-Otherwise return t.  This function use variable `super-save-predicates'"
+  "Return t when current buffer should be saved..
+Otherwise return nil.
+
+This function relies on the variable `super-save-predicates'."
   (let ((preds super-save-predicates)
         (save-flag t)
         current-pred)
