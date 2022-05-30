@@ -1,5 +1,13 @@
 # Changelog
 
+## master (unreleased)
+
+### New features
+
+* Make super-save checks customizable via `super-save-predicates`.
+* Introduce defcustom `super-save-max-buffer-size` as a way to avoid auto-saving big files.
+* Introduce defcustom `super-save-exclude` (a list of regular expression) as a way to filter out certain buffer names from being auto-saved.
+
 ## 0.3.0 (2018-09-29)
 
 ### New features
