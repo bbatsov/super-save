@@ -81,7 +81,8 @@ When a buffer-file-name matches any of the regexps it is ignored."
   :package-version '(super-save . "0.4.0"))
 
 (defcustom super-save-max-buffer-size 10000
-  "Maximal Size of buffer, for which super-save work."
+  "Maximal size of buffer, for which super-save work.
+Set to nil to disable."
   :group 'super-save
   :type 'integer
   :package-version '(super-save . "0.4.0"))
@@ -90,7 +91,7 @@ When a buffer-file-name matches any of the regexps it is ignored."
   '((lambda () buffer-file-name)
     (lambda () (buffer-modified-p (current-buffer)))
     (lambda () (file-writable-p buffer-file-name))
-    (lambda () (< (buffer-size) super-save-max-buffer-size))
+    (lambda () (and super-save-max-buffer-size (< (buffer-size) super-save-max-buffer-size)))
     (lambda ()
       (if (file-remote-p buffer-file-name) super-save-remote-files t))
     (lambda () (super-save-include-p buffer-file-name)))
