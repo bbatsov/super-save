@@ -80,8 +80,9 @@ When a buffer-file-name matches any of the regexps it is ignored."
   :type '(repeat (choice regexp))
   :package-version '(super-save . "0.4.0"))
 
-(defcustom super-save-max-buffer-size 10000
-  "Maximal size of buffer, for which super-save work.
+(defcustom super-save-max-buffer-size nil
+  "Maximal size of buffer (in characters), for which super-save work.
+Exists mostly because saving constantly huge buffers can be slow in some cases.
 Set to nil to disable."
   :group 'super-save
   :type 'integer
