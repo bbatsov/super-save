@@ -83,7 +83,7 @@ When a buffer-file-name matches any of the regexps it is ignored."
 (defcustom super-save-max-buffer-size nil
   "Maximal size of buffer (in characters), for which super-save work.
 Exists mostly because saving constantly huge buffers can be slow in some cases.
-Set to nil to disable."
+Set to 0 or nil to disable."
   :group 'super-save
   :type 'integer
   :package-version '(super-save . "0.4.0"))
@@ -92,7 +92,7 @@ Set to nil to disable."
   '((lambda () buffer-file-name)
     (lambda () (buffer-modified-p (current-buffer)))
     (lambda () (file-writable-p buffer-file-name))
-    (lambda () (and super-save-max-buffer-size (< (buffer-size) super-save-max-buffer-size)))
+    (lambda () (and super-save-max-buffer-size (> super-save-max-buffer-size 0) (< (buffer-size) super-save-max-buffer-size)))
     (lambda ()
       (if (file-remote-p buffer-file-name) super-save-remote-files t))
     (lambda () (super-save-include-p buffer-file-name)))
