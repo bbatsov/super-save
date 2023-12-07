@@ -81,6 +81,13 @@ See `super-save-auto-save-when-idle'."
   :type 'boolean
   :package-version '(super-save . "0.4.1"))
 
+(defcustom super-save-delete-trailing-whitespaces nil
+  "Delete the trailing whitespaces except for the current line."
+  :group 'super-save
+  :type '(choice (boolean :tag "Enable/disable deleting trailing whitespace for the whole buffer.")
+          (symbol :tag "Delete trailing whitespaces except the current line." except-current-line))
+  :package-version '(super-save . "0.4.1"))
+
 (defcustom super-save-exclude nil
   "A list of regexps for `buffer-file-name' excluded from super-save.
 When a `buffer-file-name' matches any of the regexps it is ignored."
@@ -123,9 +130,28 @@ whether this buffer needs to be super-saved or not, then it must return t."
 This function relies on the variable `super-save-predicates'."
   (seq-every-p #'funcall super-save-predicates))
 
+(defun super-save-delete-trailing-whitespaces-maybe ()
+  "Delete trailing whitespace except the current line."
+  (cond
+   ((eq super-save-delete-trailing-whitespaces 'except-current-line)
+    (let ((start (line-beginning-position))
+          (current (point)))
+      (save-excursion
+        (when (< (point-min) start)
+          (save-restriction
+            (narrow-to-region (point-min) (1- start))
+            (delete-trailing-whitespace)))
+        (when (> (point-max) current)
+          (save-restriction
+            (narrow-to-region current (point-max))
+            (delete-trailing-whitespace))))))
+   (super-save-delete-trailing-whitespaces
+    (delete-trailing-whitespace))))
+
 (defun super-save-command ()
   "Save the current buffer if needed."
   (when (super-save-p)
+    (super-save-delete-trailing-whitespaces-maybe)
     (if super-save-silent
         (with-temp-message ""
           (let ((inhibit-message t)
