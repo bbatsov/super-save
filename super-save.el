@@ -30,6 +30,9 @@
 ;; super-save saves buffers when they lose focus.
 ;;
 ;;; Code:
+
+(require 'seq)
+
 (defgroup super-save nil
   "Smart-saving of buffers."
   :group 'tools
@@ -66,7 +69,6 @@ See `super-save-auto-save-when-idle'."
   :type 'integer
   :package-version '(super-save . "0.2.0"))
 
-
 (defcustom super-save-remote-files t
   "Save remote files when t, ignore them otherwise."
   :group 'super-save
@@ -74,8 +76,8 @@ See `super-save-auto-save-when-idle'."
   :package-version '(super-save . "0.3.0"))
 
 (defcustom super-save-exclude nil
-  "A list of regexps for buffer-file-name excluded from super-save.
-When a buffer-file-name matches any of the regexps it is ignored."
+  "A list of regexps for `buffer-file-name' excluded from super-save.
+When a `buffer-file-name' matches any of the regexps it is ignored."
   :group 'super-save
   :type '(repeat (choice regexp))
   :package-version '(super-save . "0.4.0"))
@@ -107,30 +109,13 @@ whether this buffer needs to be super-saved or not, then it must return t."
 
 (defun super-save-include-p (filename)
   "Return non-nil if FILENAME doesn't match any of the `super-save-exclude'."
-  (let ((checks super-save-exclude)
-        (keepit t))
-    (while (and checks keepit)
-      (setq keepit
-            (not (ignore-errors
-                   (if (stringp (car checks))
-                       (string-match (car checks) filename))))
-            checks
-            (cdr checks)))
-    keepit))
+  (not (seq-some (lambda (regexp) (string-match-p regexp filename)) super-save-exclude)))
 
 (defun super-save-p ()
-  "Return t when current buffer should be saved..
-Otherwise return nil.
+  "Return t when current buffer should be saved, otherwise return nil.
 
 This function relies on the variable `super-save-predicates'."
-  (let ((preds super-save-predicates)
-        (save-flag t)
-        current-pred)
-    (while (and save-flag preds)
-      (setq current-pred (car preds))
-      (setq save-flag (funcall current-pred))
-      (setq preds (cdr preds)))
-    save-flag))
+  (seq-every-p #'funcall super-save-predicates))
 
 (defun super-save-command ()
   "Save the current buffer if needed."
@@ -182,14 +167,14 @@ This function relies on the variable `super-save-predicates'."
 
 ;;;###autoload
 (define-minor-mode super-save-mode
-    "A minor mode that saves your Emacs buffers when they lose focus."
+  "A minor mode that saves your Emacs buffers when they lose focus."
   :lighter " super-save"
   :keymap super-save-mode-map
   :group 'super-save
   :global t
   (cond
-    (super-save-mode (super-save-initialize))
-    (t (super-save-stop))))
+   (super-save-mode (super-save-initialize))
+   (t (super-save-stop))))
 
 (provide 'super-save)
 ;;; super-save.el ends here
