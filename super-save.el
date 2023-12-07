@@ -5,7 +5,7 @@
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/super-save
 ;; Keywords: convenience
-;; Version: 0.4.0-snapshot
+;; Version: 0.4.1-snapshot
 ;; Package-Requires: ((emacs "24.4"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -75,6 +75,12 @@ See `super-save-auto-save-when-idle'."
   :type 'boolean
   :package-version '(super-save . "0.3.0"))
 
+(defcustom super-save-silent nil
+  "Save silently, don't display any message."
+  :group 'super-save
+  :type 'boolean
+  :package-version '(super-save . "0.4.1"))
+
 (defcustom super-save-exclude nil
   "A list of regexps for `buffer-file-name' excluded from super-save.
 When a `buffer-file-name' matches any of the regexps it is ignored."
@@ -119,7 +125,14 @@ This function relies on the variable `super-save-predicates'."
 
 (defun super-save-command ()
   "Save the current buffer if needed."
-  (when (super-save-p) (save-buffer)))
+  (when (super-save-p)
+    (if super-save-silent
+        (with-temp-message ""
+          (let ((inhibit-message t)
+                (inhibit-redisplay t)
+                (message-log-max nil))
+            (basic-save-buffer)))
+      (basic-save-buffer))))
 
 (defvar super-save-idle-timer)
 
