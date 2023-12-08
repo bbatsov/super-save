@@ -5,8 +5,8 @@
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/super-save
 ;; Keywords: convenience
-;; Version: 0.4.1-snapshot
-;; Package-Requires: ((emacs "24.4"))
+;; Version: 0.4.0-snapshot
+;; Package-Requires: ((emacs "25.1"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -79,14 +79,14 @@ See `super-save-auto-save-when-idle'."
   "Save silently, don't display any message."
   :group 'super-save
   :type 'boolean
-  :package-version '(super-save . "0.4.1"))
+  :package-version '(super-save . "0.4.0"))
 
 (defcustom super-save-delete-trailing-whitespaces nil
   "Delete the trailing whitespaces except for the current line."
   :group 'super-save
   :type '(choice (boolean :tag "Enable/disable deleting trailing whitespace for the whole buffer.")
           (symbol :tag "Delete trailing whitespaces except the current line." except-current-line))
-  :package-version '(super-save . "0.4.1"))
+  :package-version '(super-save . "0.4.0"))
 
 (defcustom super-save-exclude nil
   "A list of regexps for `buffer-file-name' excluded from super-save.

@@ -4,18 +4,18 @@
 
 # super-save
 
-super-save auto-saves your buffers, when certain events happen - e.g. you switch between buffers,
-an Emacs frame loses focus, etc. You can think of it as both something that augments and replaces
-the standard `auto-save-mode`.
+super-save auto-saves your buffers, when certain events happen - e.g. you switch
+between buffers, an Emacs frame loses focus, etc. You can think of it as both
+something that augments and replaces the standard `auto-save-mode`.
 
 ## Installation
 
-Available on all major `package.el` community maintained repos -
-[MELPA Stable][] and [MELPA][] repos.
+Available on all major `package.el` community maintained repos - [MELPA
+Stable][] and [MELPA][] repos.
 
-MELPA Stable is recommended as it has the latest stable version.
-MELPA has a development snapshot for users who don't mind breakage but
-don't want to run from a git checkout.
+MELPA Stable is recommended as it has the latest stable version. MELPA has a
+development snapshot for users who don't mind breakage but don't want to run
+from a git checkout.
 
 You can install `super-save` using the following command:
 
@@ -47,9 +47,8 @@ If you're into `use-package` you can use the following snippet:
 ### Emacs Prelude
 
 super-save started its life as the extraction of a similar functionality I had
-originally developed for [Emacs
-Prelude](https://github.com/bbatsov/prelude) and the package is bundled
-with Prelude.
+originally developed for [Emacs Prelude](https://github.com/bbatsov/prelude) and
+the package is bundled with Prelude.
 
 ## Usage
 
@@ -60,15 +59,15 @@ Add the following to your Emacs config to enable
 (super-save-mode +1)
 ```
 
-If you want to enable the additional feature of auto-saving buffers
-when Emacs is idle, add the following as well:
+If you want to enable the additional feature of auto-saving buffers when Emacs
+is idle, add the following as well:
 
 ```el
 (setq super-save-auto-save-when-idle t)
 ```
 
-At this point you can probably switch off the built-in
-`auto-save-mode` (unless you really care about its backups):
+At this point you can probably switch off the built-in `auto-save-mode` (unless
+you really care about its backups):
 
 ```el
 (setq auto-save-default nil)
@@ -76,8 +75,8 @@ At this point you can probably switch off the built-in
 
 ## Configuration
 
-super-save will save files on command (e.g. `switch-to-buffer`) and
-hook triggers (e.g. `focus-out-hook`).
+super-save will save files on command (e.g. `switch-to-buffer`) and hook
+triggers (e.g. `focus-out-hook`).
 
 Both of those are configurable via `super-save-triggers` and
 `super-save-hook-triggers`. Here's a couple of examples:
@@ -92,21 +91,46 @@ Both of those are configurable via `super-save-triggers` and
 
 You can turn off `super-save` for remote files like this:
 
-``` el
+```el
 (setq super-save-remote-files nil)
 ```
 
 Sometimes you might want to exclude specific files from super-save. You can
 achieve this via `super-save-exclude`, for example:
 
-``` el
+```el
 (setq super-save-exclude '(".gpg"))
 ```
 
-You can add predicate to `super-save-predicates`, this predicates must not take arguments and return nil, when current buffer shouldn't save. If predicate don't know needle of save file, then predicate must return t. Folowing example stop `super-save`, when current file in Markdown mode:
-```elisp
+You can add predicate to `super-save-predicates`, this predicates must not take
+arguments and return nil, when current buffer shouldn't save. If predicate don't
+know needle of save file, then predicate must return t. Following example stop
+`super-save`, when current file in Markdown mode:
+
+```el
 (add-to-list 'super-save-predicates (lambda ()
                                         (not (eq major-mode 'markdown-mode))))
+```
+
+When saving a file automatically, Emacs will display a message in the
+`*Messages*` buffer and in the echo area. If you want to suppress these
+messages, you can set `super-save-silent` to `t`.
+
+```el
+;; Save silently
+(setq super-save-silent t)
+```
+
+The `super-save-delete-trailing-whitespaces` variable can be used to enable
+deleting trailing white spaces before saving (via Emacs'
+`delete-trailing-whitespace`).
+
+```el
+;; Enable deleting trailing white spaces before saving
+(setq super-save-delete-trailing-whitespaces t)
+
+;; Enable deleting trailing white spaces before saving (except for the current line)
+(setq super-save-delete-trailing-whitespaces 'except-current-line)
 ```
 
 ## License
