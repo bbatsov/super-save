@@ -133,6 +133,9 @@ deleting trailing white spaces before saving (via Emacs'
 (setq super-save-delete-trailing-whitespaces 'except-current-line)
 ```
 
+By default, `super-save` will automatically save only the current buffer, if you
+want to save all open buffers you can set `super-save-all-buffers` to `t`.
+
 ## License
 
 Copyright © 2015-2022 Bozhidar Batsov and [contributors][].
