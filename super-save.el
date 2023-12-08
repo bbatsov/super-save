@@ -62,6 +62,12 @@
   :type 'boolean
   :package-version '(super-save . "0.2.0"))
 
+(defcustom super-save-all-buffers nil
+  "Auto-save all buffers, not just the current one."
+  :group 'super-save
+  :type 'boolean
+  :package-version '(super-save . "0.4.0"))
+
 (defcustom super-save-idle-duration 5
   "The number of seconds Emacs has to be idle, before auto-saving the current buffer.
 See `super-save-auto-save-when-idle'."
@@ -150,15 +156,17 @@ This function relies on the variable `super-save-predicates'."
 
 (defun super-save-command ()
   "Save the current buffer if needed."
-  (when (super-save-p)
-    (super-save-delete-trailing-whitespaces-maybe)
-    (if super-save-silent
-        (with-temp-message ""
-          (let ((inhibit-message t)
-                (inhibit-redisplay t)
-                (message-log-max nil))
-            (basic-save-buffer)))
-      (basic-save-buffer))))
+  (dolist (buf (if super-save-all-buffers (buffer-list) (list (current-buffer))))
+    (with-current-buffer buf
+      (when (super-save-p)
+        (super-save-delete-trailing-whitespaces-maybe)
+        (if super-save-silent
+            (with-temp-message ""
+              (let ((inhibit-message t)
+                    (inhibit-redisplay t)
+                    (message-log-max nil))
+                (basic-save-buffer)))
+          (basic-save-buffer))))))
 
 (defvar super-save-idle-timer)
 
