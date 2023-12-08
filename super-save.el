@@ -57,19 +57,26 @@
   :package-version '(super-save . "0.3.0"))
 
 (defcustom super-save-auto-save-when-idle nil
-  "Save current buffer automatically when Emacs is idle."
+  "Save automatically when Emacs is idle."
   :group 'super-save
   :type 'boolean
   :package-version '(super-save . "0.2.0"))
 
 (defcustom super-save-all-buffers nil
-  "Auto-save all buffers, not just the current one."
+  "Auto-save all buffers, not just the current one.
+
+Setting this to t can be interesting when you make indirect buffer edits, like
+when editing `grep's results with `occur-mode' and 'occur-edit-mode', or when
+running a project-wide search and replace with `project-query-replace-regexp'
+and so on. In these cases, we can indirectly edit several buffers without
+actually visiting or switching to these buffers. Hence, this option allow to
+automatically save these buffers, even when they aren't visible in any window."
   :group 'super-save
   :type 'boolean
   :package-version '(super-save . "0.4.0"))
 
 (defcustom super-save-idle-duration 5
-  "The number of seconds Emacs has to be idle, before auto-saving the current buffer.
+  "Delay in seconds for which Emacs has to be idle before auto-saving.
 See `super-save-auto-save-when-idle'."
   :group 'super-save
   :type 'integer
@@ -119,8 +126,8 @@ Set to 0 or nil to disable."
     (lambda ()
       (if (file-remote-p buffer-file-name) super-save-remote-files t))
     (lambda () (super-save-include-p buffer-file-name)))
-  "Predicates, which return nil, when current buffer doesn't need to be saved.
-Predicate functions don't take any arguments.  If a predicate doesn't know
+  "Predicates, which return nil, when the buffer doesn't need to be saved.
+Predicate functions don't take any arguments. If a predicate doesn't know
 whether this buffer needs to be super-saved or not, then it must return t."
   :group 'super-save
   :type 'integer
@@ -154,10 +161,10 @@ This function relies on the variable `super-save-predicates'."
    (super-save-delete-trailing-whitespaces
     (delete-trailing-whitespace))))
 
-(defun super-save-command ()
-  "Save the current buffer if needed."
-  (dolist (buf (if super-save-all-buffers (buffer-list) (list (current-buffer))))
-    (with-current-buffer buf
+(defun super-save-buffer (buffer)
+  "Save BUFFER if needed."
+  (with-current-buffer buffer
+    (save-excursion
       (when (super-save-p)
         (super-save-delete-trailing-whitespaces-maybe)
         (if super-save-silent
@@ -167,6 +174,13 @@ This function relies on the variable `super-save-predicates'."
                     (message-log-max nil))
                 (basic-save-buffer)))
           (basic-save-buffer))))))
+
+(defun super-save-command ()
+  "Save the relevant buffers if needed.
+
+When `super-save-all-buffers' is non-nil, save all modified buffers, else, save
+only the current buffer."
+  (mapc #'super-save-buffer (if super-save-all-buffers (buffer-list) (list (current-buffer)))))
 
 (defvar super-save-idle-timer)
 
