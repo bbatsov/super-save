@@ -94,11 +94,12 @@ See `super-save-auto-save-when-idle'."
   :type 'boolean
   :package-version '(super-save . "0.4.0"))
 
-(defcustom super-save-delete-trailing-whitespaces nil
-  "Delete the trailing whitespaces except for the current line."
+(defcustom super-save-delete-trailing-whitespace nil
+  "Controls whether to delete the trailing whitespace before saving.
+Set to 'except-current-line if you want to avoid the current line."
   :group 'super-save
   :type '(choice (boolean :tag "Enable/disable deleting trailing whitespace for the whole buffer.")
-          (symbol :tag "Delete trailing whitespaces except the current line." except-current-line))
+          (symbol :tag "Delete trailing whitespace except the current line." except-current-line))
   :package-version '(super-save . "0.4.0"))
 
 (defcustom super-save-exclude nil
@@ -127,7 +128,7 @@ Set to 0 or nil to disable."
       (if (file-remote-p buffer-file-name) super-save-remote-files t))
     (lambda () (super-save-include-p buffer-file-name)))
   "Predicates, which return nil, when the buffer doesn't need to be saved.
-Predicate functions don't take any arguments. If a predicate doesn't know
+Predicate functions don't take any arguments.  If a predicate doesn't know
 whether this buffer needs to be super-saved or not, then it must return t."
   :group 'super-save
   :type 'integer
@@ -143,10 +144,12 @@ whether this buffer needs to be super-saved or not, then it must return t."
 This function relies on the variable `super-save-predicates'."
   (seq-every-p #'funcall super-save-predicates))
 
-(defun super-save-delete-trailing-whitespaces-maybe ()
-  "Delete trailing whitespace except the current line."
+(defun super-save-delete-trailing-whitespace-maybe ()
+  "Delete trailing whitespace, optionally avoiding the current line.
+
+See `super-save-delete-trailing-whitespace'."
   (cond
-   ((eq super-save-delete-trailing-whitespaces 'except-current-line)
+   ((eq super-save-delete-trailing-whitespace 'except-current-line)
     (let ((start (line-beginning-position))
           (current (point)))
       (save-excursion
@@ -158,15 +161,15 @@ This function relies on the variable `super-save-predicates'."
           (save-restriction
             (narrow-to-region current (point-max))
             (delete-trailing-whitespace))))))
-   (super-save-delete-trailing-whitespaces
+   (super-save-delete-trailing-whitespace
     (delete-trailing-whitespace))))
 
 (defun super-save-buffer (buffer)
-  "Save BUFFER if needed."
+  "Save BUFFER if needed, super-save style."
   (with-current-buffer buffer
     (save-excursion
       (when (super-save-p)
-        (super-save-delete-trailing-whitespaces-maybe)
+        (super-save-delete-trailing-whitespace-maybe)
         (if super-save-silent
             (with-temp-message ""
               (let ((inhibit-message t)

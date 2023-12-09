@@ -12,7 +12,7 @@
 - [#43](https://github.com/bbatsov/crux/issues/43) Introduce `super-save-silent`
   to avoid printing messages in the `*Messages*` buffer or in the echo area.
 - [#43](https://github.com/bbatsov/crux/issues/43) Introduce
-  `super-save-delete-trailing-whitespaces` which defaults to `nil` and accepts
+  `super-save-delete-trailing-whitespace` which defaults to `nil` and accepts
   `t` to run `delete-trailing-whitespace` before saving the buffer. This
   variable accepts only the symbol `except-current-line` to delete trailing
   white spaces from all lines except the current one. This can be useful when we

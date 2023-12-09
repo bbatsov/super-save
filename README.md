@@ -121,16 +121,16 @@ messages, you can set `super-save-silent` to `t`.
 (setq super-save-silent t)
 ```
 
-The `super-save-delete-trailing-whitespaces` variable can be used to enable
+The `super-save-delete-trailing-whitespace` variable can be used to enable
 deleting trailing white spaces before saving (via Emacs'
 `delete-trailing-whitespace`).
 
 ```el
 ;; Enable deleting trailing white spaces before saving
-(setq super-save-delete-trailing-whitespaces t)
+(setq super-save-delete-trailing-whitespace t)
 
 ;; Enable deleting trailing white spaces before saving (except for the current line)
-(setq super-save-delete-trailing-whitespaces 'except-current-line)
+(setq super-save-delete-trailing-whitespace 'except-current-line)
 ```
 
 By default, `super-save` will automatically save only the current buffer, if you
