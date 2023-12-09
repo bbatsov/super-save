@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.4.0 (2023-12-09)
+
 ### New features
 
 - Make super-save checks customizable via `super-save-predicates`.
@@ -22,7 +24,6 @@
   [#20](https://github.com/bbatsov/crux/issues/20) Introduce
   `super-save-all-buffers` to save all modified buffers instead of only the
   current one.
-
 
 ## 0.3.0 (2018-09-29)
 
