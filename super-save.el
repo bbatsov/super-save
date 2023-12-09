@@ -68,8 +68,8 @@
 Setting this to t can be interesting when you make indirect buffer edits, like
 when editing `grep's results with `occur-mode' and 'occur-edit-mode', or when
 running a project-wide search and replace with `project-query-replace-regexp'
-and so on. In these cases, we can indirectly edit several buffers without
-actually visiting or switching to these buffers. Hence, this option allow to
+and so on.  In these cases, we can indirectly edit several buffers without
+actually visiting or switching to these buffers.  Hence, this option allow to
 automatically save these buffers, even when they aren't visible in any window."
   :group 'super-save
   :type 'boolean

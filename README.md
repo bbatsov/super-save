@@ -136,6 +136,13 @@ deleting trailing white spaces before saving (via Emacs'
 By default, `super-save` will automatically save only the current buffer, if you
 want to save all open buffers you can set `super-save-all-buffers` to `t`.
 
+Setting this to `t` can be interesting when you make indirect buffer edits, like
+when editing `grep`s results with `occur-mode` and `occur-edit-mode`, or when
+running a project-wide search and replace with `project-query-replace-regexp`
+and so on.  In these cases, we can indirectly edit several buffers without
+actually visiting or switching to these buffers.  Hence, this option allow to
+automatically save these buffers, even when they aren't visible in any window.
+
 ## License
 
 Copyright © 2015-2022 Bozhidar Batsov and [contributors][].
