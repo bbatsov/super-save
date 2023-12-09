@@ -25,6 +25,10 @@
   `super-save-all-buffers` to save all modified buffers instead of only the
   current one.
 
+### Changes
+
+- Require Emacs 25.1.
+
 ## 0.3.0 (2018-09-29)
 
 ### New features
