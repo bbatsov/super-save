@@ -68,7 +68,7 @@
   "Auto-save all buffers, not just the current one.
 
 Setting this to t can be interesting when you make indirect buffer edits, like
-when editing `grep's results with `occur-mode' and 'occur-edit-mode', or when
+when editing `grep's results with `occur-mode' and `occur-edit-mode', or when
 running a project-wide search and replace with `project-query-replace-regexp'
 and so on.  In these cases, we can indirectly edit several buffers without
 actually visiting or switching to these buffers.  Hence, this option allow to
@@ -98,7 +98,7 @@ See `super-save-auto-save-when-idle'."
 
 (defcustom super-save-delete-trailing-whitespace nil
   "Controls whether to delete the trailing whitespace before saving.
-Set to 'except-current-line if you want to avoid the current line."
+Set to `except-current-line' if you want to avoid the current line."
   :group 'super-save
   :type '(choice (boolean :tag "Enable/disable deleting trailing whitespace for the whole buffer.")
           (symbol :tag "Delete trailing whitespace except the current line." except-current-line))
