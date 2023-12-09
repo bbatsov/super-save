@@ -11,9 +11,9 @@
   big files.
 - Introduce defcustom `super-save-exclude` (a list of regular expression) as a
   way to filter out certain buffer names from being auto-saved.
-- [#43](https://github.com/bbatsov/crux/issues/43) Introduce `super-save-silent`
+- [#43](https://github.com/bbatsov/crux/issues/43): Introduce `super-save-silent`
   to avoid printing messages in the `*Messages*` buffer or in the echo area.
-- [#43](https://github.com/bbatsov/crux/issues/43) Introduce
+- [#43](https://github.com/bbatsov/crux/issues/43): Introduce
   `super-save-delete-trailing-whitespace` which defaults to `nil` and accepts
   `t` to run `delete-trailing-whitespace` before saving the buffer. This
   variable accepts only the symbol `except-current-line` to delete trailing
@@ -21,7 +21,7 @@
   are in the middle of writing some thing and we add a space at the end, in this
   case, we more likely need the space to stay there instead of deleting it.
 - [#44](https://github.com/bbatsov/crux/issues/44) &
-  [#20](https://github.com/bbatsov/crux/issues/20) Introduce
+  [#20](https://github.com/bbatsov/crux/issues/20): Introduce
   `super-save-all-buffers` to save all modified buffers instead of only the
   current one.
 
