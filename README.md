@@ -1,6 +1,7 @@
 [![License GPL 3][badge-license]][copying]
 [![MELPA][melpa-badge]][melpa-package]
 [![MELPA Stable][melpa-stable-badge]][melpa-stable-package]
+[![Build Status](https://github.com/bbatsov/super-save/workflows/CI/badge.svg)](https://github.com/bbatsov/super-save/actions?query=workflow%3ACI)
 
 # super-save
 
