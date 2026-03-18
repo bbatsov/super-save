@@ -1,6 +1,8 @@
 # Changelog
 
-## master (unreleased)
+## main (unreleased)
+
+## 0.5.0 (2026-03-18)
 
 ### New features
 
@@ -17,10 +19,15 @@
   `edit-indirect` buffers (via `edit-indirect--commit`).  Controlled by
   `super-save-handle-org-src` and `super-save-handle-edit-indirect` (both
   enabled by default).
-- Use `window-buffer-change-functions' and `window-selection-change-functions' to
+- Use `window-buffer-change-functions` and `window-selection-change-functions` to
   detect buffer and window switches.  Controlled by the new
   `super-save-when-buffer-switched` option (enabled by default).  This catches all
   buffer switches regardless of how they happen, unlike `super-save-triggers`.
+
+### Bug fixes
+
+- Fix redundant saves in `super-save-focus-change-handler` — previously it called
+  `super-save-command` once per unfocused frame instead of once.
 
 ### Changes
 
