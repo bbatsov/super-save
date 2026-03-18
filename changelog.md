@@ -9,7 +9,7 @@
 - Make super-save checks customizable via `super-save-predicates`.
 - Introduce defcustom `super-save-max-buffer-size` as a way to avoid auto-saving
   big files.
-- Introduce defcustom `super-save-exclude` (a list of regular expression) as a
+- Introduce defcustom `super-save-exclude` (a list of regular expressions) as a
   way to filter out certain buffer names from being auto-saved.
 - [#43](https://github.com/bbatsov/crux/issues/43): Introduce `super-save-silent`
   to avoid printing messages in the `*Messages*` buffer or in the echo area.
@@ -33,7 +33,7 @@
 
 ### New features
 
-- [#16](https://github.com/bbatsov/crux/issues/16): Make this of hook triggers
+- [#16](https://github.com/bbatsov/crux/issues/16): Make list of hook triggers
   customizable (see `super-save-hook-triggers`).
 - [#18](https://github.com/bbatsov/crux/issues/18): Make it possible to disable
   super-save for remote files (see `super-save-remote-files`).

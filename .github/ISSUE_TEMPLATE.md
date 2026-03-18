@@ -1,5 +1,5 @@
 *Use the template below when reporting bugs. Please, make sure that
-you're running the latest stable Projectile and that the problem you're reporting
+you're running the latest stable super-save and that the problem you're reporting
 hasn't been reported (and potentially fixed) already.*
 
 **Remove all of the placeholder text in your final report!**
