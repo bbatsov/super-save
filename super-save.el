@@ -52,11 +52,18 @@
   :package-version '(super-save . "0.1.0"))
 
 (defcustom super-save-hook-triggers
-  '(mouse-leave-buffer-hook focus-out-hook)
+  '(mouse-leave-buffer-hook)
   "A list of hooks which would trigger `super-save-command'."
   :group 'super-save
   :type '(repeat symbol)
   :package-version '(super-save . "0.3.0"))
+
+(defcustom super-save-when-focus-lost t
+  "Save buffers when an Emacs frame loses focus.
+Uses `after-focus-change-function' to detect focus changes."
+  :group 'super-save
+  :type 'boolean
+  :package-version '(super-save . "0.5.0"))
 
 (defcustom super-save-auto-save-when-idle nil
   "Save automatically when Emacs is idle."
@@ -217,19 +224,30 @@ only the current buffer."
   "Stop super-save idle timer if `super-save-idle-timer' is set."
   (when super-save-idle-timer (cancel-timer super-save-idle-timer)))
 
+(defun super-save-focus-change-handler ()
+  "Save buffers when any Emacs frame loses focus."
+  (dolist (frame (frame-list))
+    (unless (frame-focus-state frame)
+      (super-save-command))))
+
 (defun super-save-initialize ()
   "Setup super-save's advice and hooks."
   (super-save-advise-trigger-commands)
   (super-save-initialize-idle-timer)
   (dolist (hook super-save-hook-triggers)
-    (add-hook hook #'super-save-command)))
+    (add-hook hook #'super-save-command))
+  (when super-save-when-focus-lost
+    (add-function :after after-focus-change-function
+                  #'super-save-focus-change-handler)))
 
 (defun super-save-stop ()
   "Cleanup super-save's advice and hooks."
   (super-save-remove-advice-from-trigger-commands)
   (super-save-stop-idle-timer)
   (dolist (hook super-save-hook-triggers)
-    (remove-hook hook #'super-save-command)))
+    (remove-hook hook #'super-save-command))
+  (remove-function after-focus-change-function
+                   #'super-save-focus-change-handler))
 
 ;;;###autoload
 (define-minor-mode super-save-mode

@@ -2,9 +2,16 @@
 
 ## master (unreleased)
 
+### New features
+
+- Use `after-focus-change-function` instead of the obsolete `focus-out-hook` for
+  detecting frame focus loss.  Controlled by the new `super-save-when-focus-lost`
+  option (enabled by default).
+
 ### Changes
 
 - Require Emacs 27.1.
+- Remove `focus-out-hook` from the default `super-save-hook-triggers`.
 
 ## 0.4.0 (2023-12-09)
 

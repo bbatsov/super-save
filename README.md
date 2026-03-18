@@ -76,8 +76,9 @@ you really care about its backups):
 
 ## Configuration
 
-super-save will save files on command (e.g. `switch-to-buffer`) and hook
-triggers (e.g. `focus-out-hook`).
+super-save will save files on command (e.g. `switch-to-buffer`), hook
+triggers (e.g. `mouse-leave-buffer-hook`), and when an Emacs frame
+loses focus (via `after-focus-change-function`).
 
 Both of those are configurable via `super-save-triggers` and
 `super-save-hook-triggers`. Here are a couple of examples:
