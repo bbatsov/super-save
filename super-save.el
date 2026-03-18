@@ -163,7 +163,13 @@ whether the buffer needs to be super-saved or not, it must return t."
   "Return t when current buffer should be saved, otherwise return nil.
 
 This function relies on the variable `super-save-predicates'."
-  (seq-every-p #'funcall super-save-predicates))
+  (seq-every-p (lambda (pred)
+                 (condition-case err
+                     (funcall pred)
+                   (error
+                    (message "super-save: predicate %S failed: %S" pred err)
+                    nil)))
+               super-save-predicates))
 
 (defun super-save-delete-trailing-whitespace-maybe ()
   "Delete trailing whitespace, optionally avoiding the current line.
