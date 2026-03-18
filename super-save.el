@@ -27,7 +27,7 @@
 
 ;;; Commentary:
 ;;
-;; super-save auto-saves your buffers, when certain events happen - e.g. you
+;; super-save auto-saves your buffers when certain events happen - e.g. you
 ;; switch between buffers, an Emacs frame loses focus, etc. You can think of it
 ;; as both something that augments and replaces the standard auto-save-mode.
 ;;
@@ -68,10 +68,10 @@
   "Auto-save all buffers, not just the current one.
 
 Setting this to t can be interesting when you make indirect buffer edits, like
-when editing `grep's results with `occur-mode' and `occur-edit-mode', or when
+when editing `grep' results with `occur-mode' and `occur-edit-mode', or when
 running a project-wide search and replace with `project-query-replace-regexp'
 and so on.  In these cases, we can indirectly edit several buffers without
-actually visiting or switching to these buffers.  Hence, this option allow to
+actually visiting or switching to these buffers.  Hence, this option allows you to
 automatically save these buffers, even when they aren't visible in any window."
   :group 'super-save
   :type 'boolean
@@ -112,7 +112,7 @@ When a `buffer-file-name' matches any of the regexps it is ignored."
   :package-version '(super-save . "0.4.0"))
 
 (defcustom super-save-max-buffer-size nil
-  "Maximal size of buffer (in characters), for which super-save work.
+  "Maximal size of buffer (in characters), for which super-save works.
 Exists mostly because saving constantly huge buffers can be slow in some cases.
 Set to 0 or nil to disable."
   :group 'super-save
@@ -129,9 +129,9 @@ Set to 0 or nil to disable."
     (lambda ()
       (if (file-remote-p buffer-file-name) super-save-remote-files t))
     (lambda () (super-save-include-p buffer-file-name)))
-  "Predicates, which return nil, when the buffer doesn't need to be saved.
+  "Predicates which return nil when the buffer doesn't need to be saved.
 Predicate functions don't take any arguments.  If a predicate doesn't know
-whether this buffer needs to be super-saved or not, then it must return t."
+whether the buffer needs to be super-saved or not, it must return t."
   :group 'super-save
   :type 'integer
   :package-version '(super-save . "0.4.0"))
@@ -201,7 +201,7 @@ only the current buffer."
    super-save-triggers))
 
 (defun super-save-remove-advice-from-trigger-commands ()
-  "Remove super-save advice from to the commands listed in `super-save-triggers'."
+  "Remove super-save advice from the commands listed in `super-save-triggers'."
   (mapc
    (lambda (command)
      (advice-remove command #'super-save-command-advice))
@@ -218,14 +218,14 @@ only the current buffer."
   (when super-save-idle-timer (cancel-timer super-save-idle-timer)))
 
 (defun super-save-initialize ()
-  "Setup super-save's advices and hooks."
+  "Setup super-save's advice and hooks."
   (super-save-advise-trigger-commands)
   (super-save-initialize-idle-timer)
   (dolist (hook super-save-hook-triggers)
     (add-hook hook #'super-save-command)))
 
 (defun super-save-stop ()
-  "Cleanup super-save's advices and hooks."
+  "Cleanup super-save's advice and hooks."
   (super-save-remove-advice-from-trigger-commands)
   (super-save-stop-idle-timer)
   (dolist (hook super-save-hook-triggers)
