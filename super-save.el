@@ -241,22 +241,21 @@ See `super-save-delete-trailing-whitespace'."
 (defun super-save-buffer (buffer)
   "Save BUFFER if needed, super-save style."
   (with-current-buffer buffer
-    (save-excursion
-      (cond
-       ;; org-src edit buffer
-       ((and super-save-handle-org-src
-             (super-save-org-src-buffer-p)
-             (buffer-modified-p))
-        (super-save-maybe-silently #'org-edit-src-save))
-       ;; edit-indirect buffer
-       ((and super-save-handle-edit-indirect
-             (super-save-edit-indirect-buffer-p)
-             (buffer-modified-p))
-        (super-save-maybe-silently #'edit-indirect--commit))
-       ;; regular file buffer
-       ((super-save-p)
-        (super-save-delete-trailing-whitespace-maybe)
-        (super-save-maybe-silently #'basic-save-buffer))))))
+    (cond
+     ;; org-src edit buffer
+     ((and super-save-handle-org-src
+           (super-save-org-src-buffer-p)
+           (buffer-modified-p))
+      (super-save-maybe-silently #'org-edit-src-save))
+     ;; edit-indirect buffer
+     ((and super-save-handle-edit-indirect
+           (super-save-edit-indirect-buffer-p)
+           (buffer-modified-p))
+      (super-save-maybe-silently #'edit-indirect--commit))
+     ;; regular file buffer
+     ((super-save-p)
+      (super-save-delete-trailing-whitespace-maybe)
+      (super-save-maybe-silently #'basic-save-buffer)))))
 
 (defun super-save-command ()
   "Save the relevant buffers if needed.

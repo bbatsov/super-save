@@ -10,6 +10,12 @@
   operations.  Save hook functions can check this to skip expensive processing
   (e.g., code formatters, database syncs) during automatic saves.
 
+### Bug fixes
+
+- Remove unnecessary `save-excursion` in `super-save-buffer` that caused point
+  to jump to the beginning of the buffer when `before-save-hook` formatters
+  (e.g., `cider-format-buffer`) replaced buffer content.
+
 ## 0.5.0 (2026-03-18)
 
 ### New features
