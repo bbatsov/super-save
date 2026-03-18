@@ -7,6 +7,8 @@
 - Use `after-focus-change-function` instead of the obsolete `focus-out-hook` for
   detecting frame focus loss.  Controlled by the new `super-save-when-focus-lost`
   option (enabled by default).
+- Add a default predicate that checks `verify-visited-file-modtime` to avoid
+  overwriting files modified outside Emacs.
 - Use `window-buffer-change-functions' and `window-selection-change-functions' to
   detect buffer and window switches.  Controlled by the new
   `super-save-when-buffer-switched` option (enabled by default).  This catches all
