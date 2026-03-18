@@ -9,6 +9,8 @@
   option (enabled by default).
 - Add a default predicate that checks `verify-visited-file-modtime` to avoid
   overwriting files modified outside Emacs.
+- Add a default predicate that checks the parent directory exists before saving,
+  to prevent errors when a file's directory has been removed.
 - Use `window-buffer-change-functions' and `window-selection-change-functions' to
   detect buffer and window switches.  Controlled by the new
   `super-save-when-buffer-switched` option (enabled by default).  This catches all

@@ -146,7 +146,8 @@ Set to 0 or nil to disable."
     (lambda ()
       (if (file-remote-p buffer-file-name) super-save-remote-files t))
     (lambda () (super-save-include-p buffer-file-name))
-    (lambda () (verify-visited-file-modtime (current-buffer))))
+    (lambda () (verify-visited-file-modtime (current-buffer)))
+    (lambda () (file-directory-p (file-name-directory buffer-file-name))))
   "Predicates which return nil when the buffer doesn't need to be saved.
 Predicate functions don't take any arguments.  If a predicate doesn't know
 whether the buffer needs to be super-saved or not, it must return t."
