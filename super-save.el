@@ -213,6 +213,16 @@ See `super-save-delete-trailing-whitespace'."
   (and (bound-and-true-p edit-indirect--overlay)
        (fboundp 'edit-indirect--commit)))
 
+(defun super-save-maybe-silently (fn)
+  "Call FN, suppressing messages if `super-save-silent' is non-nil."
+  (if super-save-silent
+      (with-temp-message ""
+        (let ((inhibit-message t)
+              (inhibit-redisplay t)
+              (message-log-max nil))
+          (funcall fn)))
+    (funcall fn)))
+
 (defun super-save-buffer (buffer)
   "Save BUFFER if needed, super-save style."
   (with-current-buffer buffer
@@ -222,34 +232,16 @@ See `super-save-delete-trailing-whitespace'."
        ((and super-save-handle-org-src
              (super-save-org-src-buffer-p)
              (buffer-modified-p))
-        (if super-save-silent
-            (with-temp-message ""
-              (let ((inhibit-message t)
-                    (inhibit-redisplay t)
-                    (message-log-max nil))
-                (org-edit-src-save)))
-          (org-edit-src-save)))
+        (super-save-maybe-silently #'org-edit-src-save))
        ;; edit-indirect buffer
        ((and super-save-handle-edit-indirect
              (super-save-edit-indirect-buffer-p)
              (buffer-modified-p))
-        (if super-save-silent
-            (with-temp-message ""
-              (let ((inhibit-message t)
-                    (inhibit-redisplay t)
-                    (message-log-max nil))
-                (edit-indirect--commit)))
-          (edit-indirect--commit)))
+        (super-save-maybe-silently #'edit-indirect--commit))
        ;; regular file buffer
        ((super-save-p)
         (super-save-delete-trailing-whitespace-maybe)
-        (if super-save-silent
-            (with-temp-message ""
-              (let ((inhibit-message t)
-                    (inhibit-redisplay t)
-                    (message-log-max nil))
-                (basic-save-buffer)))
-          (basic-save-buffer)))))))
+        (super-save-maybe-silently #'basic-save-buffer))))))
 
 (defun super-save-command ()
   "Save the relevant buffers if needed.
@@ -294,11 +286,19 @@ only the current buffer."
     (unless (frame-focus-state frame)
       (super-save-command))))
 
+(defvar super-save--window-change-pending nil
+  "Non-nil when a window-change save is already scheduled for this command loop.")
+
 (defun super-save-window-change-handler (&optional _frame)
   "Save buffers when the window buffer or selection changes.
 Intended for use with `window-buffer-change-functions' and
-`window-selection-change-functions'."
-  (super-save-command))
+`window-selection-change-functions'.  Uses a flag to avoid
+duplicate saves when both hooks fire for the same event."
+  (unless super-save--window-change-pending
+    (setq super-save--window-change-pending t)
+    (run-at-time 0 nil (lambda ()
+                         (setq super-save--window-change-pending nil)
+                         (super-save-command)))))
 
 (defun super-save-initialize ()
   "Setup super-save's advice and hooks."
