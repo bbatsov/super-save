@@ -133,7 +133,7 @@ Set to 0 or nil to disable."
 Predicate functions don't take any arguments.  If a predicate doesn't know
 whether the buffer needs to be super-saved or not, it must return t."
   :group 'super-save
-  :type 'integer
+  :type '(repeat function)
   :package-version '(super-save . "0.4.0"))
 
 (defun super-save-include-p (filename)
