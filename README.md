@@ -126,10 +126,13 @@ achieve this via `super-save-exclude`, for example:
 (setq super-save-exclude '(".gpg"))
 ```
 
-You can add a predicate to `super-save-predicates`. These predicates must not take
-arguments and return nil when the current buffer shouldn't be saved. If a predicate
-doesn't know whether the buffer needs to be saved, it must return t. The following
-example stops `super-save` when the current buffer is in Markdown mode:
+The default predicates check that the buffer is visiting a file, is modified,
+is writable, hasn't been modified externally, and that its parent directory
+still exists. You can add your own predicates to `super-save-predicates`.
+These predicates must not take arguments and return nil when the current buffer
+shouldn't be saved. If a predicate doesn't know whether the buffer needs to be
+saved, it must return t. The following example stops `super-save` when the
+current buffer is in Markdown mode:
 
 ```el
 (add-to-list 'super-save-predicates (lambda ()
