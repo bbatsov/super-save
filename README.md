@@ -11,6 +11,27 @@ something that augments and replaces the standard `auto-save-mode`.
 
 **This package requires Emacs 27.1+.**
 
+## Rationale
+
+I created `super-save` because I wanted Emacs to save files the way IntelliJ
+IDEA and other modern editors do — automatically, when you switch buffers or
+leave the editor. No manual `C-x C-s`, no thinking about it. I first wrote
+about this idea [back in
+2012](https://batsov.com/articles/2012/03/08/emacs-tip-number-5-save-buffers-automatically-on-buffer-or-window-switch/),
+and `super-save` grew out of the buffer auto-saving functionality I had built
+for [Emacs Prelude](https://github.com/bbatsov/prelude).
+
+Emacs has a built-in `auto-save-mode`, but it solves a different problem — it's
+a crash-recovery mechanism that periodically writes buffer contents to temporary
+`#file#` backup files. That's useful as a safety net, but it's not the same as
+actually saving your files. You still have to remember to hit save, and you end
+up with `#backup#` files scattered around your filesystem.
+
+`super-save` takes a simpler approach: it just saves your files (for real) when
+natural editing events happen — switching buffers, switching windows, losing
+focus, or going idle. No backup files, no recovery dance, no extra complexity.
+Your files are always saved, and you never have to think about it.
+
 ## Installation
 
 Available on all major `package.el` community maintained repos - [MELPA
