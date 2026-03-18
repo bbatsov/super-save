@@ -255,6 +255,17 @@ When `super-save-all-buffers' is non-nil, save all modified buffers, else, save
 only the current buffer."
   (mapc #'super-save-buffer (if super-save-all-buffers (buffer-list) (list (current-buffer)))))
 
+(defun super-save-command-idle ()
+  "Save buffers if needed, respecting per-buffer idle save settings.
+
+Like `super-save-command', but skips buffers where the buffer-local
+value of `super-save-auto-save-when-idle' is nil.  This is the
+callback used by the idle timer."
+  (let ((buffers (if super-save-all-buffers (buffer-list) (list (current-buffer)))))
+    (dolist (buf buffers)
+      (when (buffer-local-value 'super-save-auto-save-when-idle buf)
+        (super-save-buffer buf)))))
+
 (defvar super-save-idle-timer)
 
 (defun super-save-command-advice (&rest _args)
@@ -279,7 +290,7 @@ only the current buffer."
   "Initialize super-save idle timer if `super-save-auto-save-when-idle' is true."
   (setq super-save-idle-timer
         (when super-save-auto-save-when-idle
-          (run-with-idle-timer super-save-idle-duration t #'super-save-command))))
+          (run-with-idle-timer super-save-idle-duration t #'super-save-command-idle))))
 
 (defun super-save-stop-idle-timer ()
   "Stop super-save idle timer if `super-save-idle-timer' is set."

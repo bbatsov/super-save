@@ -2,6 +2,11 @@
 
 ## main (unreleased)
 
+### New features
+
+- `super-save-auto-save-when-idle` now respects buffer-local values, so idle
+  saving can be disabled per buffer or per mode.
+
 ## 0.5.0 (2026-03-18)
 
 ### New features

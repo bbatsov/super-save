@@ -300,6 +300,52 @@
           (when (file-exists-p f)
             (delete-file f)))))))
 
+;;; Idle saving
+
+(describe "super-save-command-idle"
+  (it "saves the current buffer when super-save-auto-save-when-idle is t"
+    (super-save-test-with-temp-file
+      (insert "new content")
+      (let ((super-save-auto-save-when-idle t)
+            (super-save-all-buffers nil))
+        (super-save-command-idle)
+        (expect (buffer-modified-p) :not :to-be-truthy))))
+
+  (it "skips the current buffer when super-save-auto-save-when-idle is nil"
+    (super-save-test-with-temp-file
+      (insert "new content")
+      (let ((super-save-auto-save-when-idle nil)
+            (super-save-all-buffers nil))
+        (super-save-command-idle)
+        (expect (buffer-modified-p) :to-be-truthy))))
+
+  (it "respects buffer-local super-save-auto-save-when-idle with super-save-all-buffers"
+    (let ((temp-file-1 (make-temp-file "super-save-test-1"))
+          (temp-file-2 (make-temp-file "super-save-test-2"))
+          (super-save-auto-save-when-idle t)
+          (super-save-all-buffers t))
+      (unwind-protect
+          (progn
+            (find-file temp-file-1)
+            (insert "content 1")
+            ;; Disable idle saving for this buffer
+            (setq-local super-save-auto-save-when-idle nil)
+            (find-file temp-file-2)
+            (insert "content 2")
+            (super-save-command-idle)
+            ;; temp-file-2 should be saved (idle saving enabled)
+            (expect (buffer-modified-p) :not :to-be-truthy)
+            ;; temp-file-1 should NOT be saved (idle saving disabled locally)
+            (with-current-buffer (get-file-buffer temp-file-1)
+              (expect (buffer-modified-p) :to-be-truthy)))
+        (dolist (f (list temp-file-1 temp-file-2))
+          (when (get-file-buffer f)
+            (with-current-buffer (get-file-buffer f)
+              (set-buffer-modified-p nil)
+              (kill-buffer)))
+          (when (file-exists-p f)
+            (delete-file f)))))))
+
 ;;; Focus change handler
 
 (describe "super-save-focus-change-handler"

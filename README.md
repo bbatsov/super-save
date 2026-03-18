@@ -98,6 +98,14 @@ By default the idle delay is 5 seconds. You can change it via
 (setq super-save-idle-duration 10)
 ```
 
+`super-save-auto-save-when-idle` can be set buffer-locally, so you can disable
+idle saving for specific modes (e.g., modes where `before-save-hook` runs
+expensive formatters):
+
+```el
+(add-hook 'go-mode-hook (lambda () (setq-local super-save-auto-save-when-idle nil)))
+```
+
 At this point you can probably switch off the built-in `auto-save-mode` (unless
 you really care about its backups):
 
