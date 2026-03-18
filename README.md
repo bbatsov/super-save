@@ -110,6 +110,13 @@ You can turn off `super-save` for remote files like this:
 (setq super-save-remote-files nil)
 ```
 
+If you have very large files that are slow to save, you can set a size limit
+(in characters) via `super-save-max-buffer-size`:
+
+```el
+(setq super-save-max-buffer-size 5000000)
+```
+
 Sometimes you might want to exclude specific files from super-save. You can
 achieve this via `super-save-exclude`, for example:
 
