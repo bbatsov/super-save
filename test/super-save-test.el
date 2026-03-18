@@ -81,7 +81,48 @@
             :not :to-be-truthy)
     (expect (memq #'super-save-window-change-handler
                   window-selection-change-functions)
-            :not :to-be-truthy)))
+            :not :to-be-truthy))
+
+  (it "registers focus-change handler when super-save-when-focus-lost is t"
+    (let ((super-save-when-focus-lost t))
+      (super-save-mode +1)
+      (expect (advice-function-member-p #'super-save-focus-change-handler
+                                        after-focus-change-function)
+              :to-be-truthy)))
+
+  (it "does not register focus-change handler when super-save-when-focus-lost is nil"
+    (let ((super-save-when-focus-lost nil))
+      (super-save-mode +1)
+      (expect (advice-function-member-p #'super-save-focus-change-handler
+                                        after-focus-change-function)
+              :not :to-be-truthy)))
+
+  (it "cleans up focus-change handler when disabled"
+    (let ((super-save-when-focus-lost t))
+      (super-save-mode +1))
+    (super-save-mode -1)
+    (expect (advice-function-member-p #'super-save-focus-change-handler
+                                      after-focus-change-function)
+            :not :to-be-truthy))
+
+  (it "initializes idle timer when super-save-auto-save-when-idle is t"
+    (let ((super-save-auto-save-when-idle t)
+          (super-save-idle-duration 10))
+      (super-save-mode +1)
+      (expect super-save-idle-timer :to-be-truthy)))
+
+  (it "does not initialize idle timer when super-save-auto-save-when-idle is nil"
+    (let ((super-save-auto-save-when-idle nil))
+      (super-save-mode +1)
+      (expect super-save-idle-timer :not :to-be-truthy)))
+
+  (it "cancels idle timer when disabled"
+    (let ((super-save-auto-save-when-idle t)
+          (super-save-idle-duration 10))
+      (super-save-mode +1)
+      (let ((timer super-save-idle-timer))
+        (super-save-mode -1)
+        (expect (timer--triggered timer) :not :to-be-truthy)))))
 
 ;;; Predicates
 
@@ -124,6 +165,20 @@
       (let ((temp-file buffer-file-name))
         (write-region "external change" nil temp-file nil 'silent)
         (expect (super-save-p) :not :to-be-truthy))))
+
+  (it "returns nil for a remote file when super-save-remote-files is nil"
+    (super-save-test-with-temp-file
+      (insert "modified")
+      (let ((super-save-remote-files nil))
+        (spy-on 'file-remote-p :and-return-value "/ssh:host:")
+        (expect (super-save-p) :not :to-be-truthy))))
+
+  (it "returns t for a remote file when super-save-remote-files is t"
+    (super-save-test-with-temp-file
+      (insert "modified")
+      (let ((super-save-remote-files t))
+        (spy-on 'file-remote-p :and-return-value "/ssh:host:")
+        (expect (super-save-p) :to-be-truthy))))
 
   (it "returns nil when parent directory no longer exists"
     (let* ((temp-dir (make-temp-file "super-save-test-dir" t))
@@ -221,6 +276,47 @@
           (when (file-exists-p f)
             (delete-file f)))))))
 
+(describe "super-save-command with super-save-all-buffers nil"
+  (it "only saves the current buffer, not other modified buffers"
+    (let ((temp-file-1 (make-temp-file "super-save-test-1"))
+          (temp-file-2 (make-temp-file "super-save-test-2"))
+          (super-save-all-buffers nil))
+      (unwind-protect
+          (progn
+            (find-file temp-file-1)
+            (insert "content 1")
+            (find-file temp-file-2)
+            (insert "content 2")
+            ;; current buffer is temp-file-2
+            (super-save-command)
+            (expect (buffer-modified-p) :not :to-be-truthy)
+            (with-current-buffer (get-file-buffer temp-file-1)
+              (expect (buffer-modified-p) :to-be-truthy)))
+        (dolist (f (list temp-file-1 temp-file-2))
+          (when (get-file-buffer f)
+            (with-current-buffer (get-file-buffer f)
+              (set-buffer-modified-p nil)
+              (kill-buffer)))
+          (when (file-exists-p f)
+            (delete-file f)))))))
+
+;;; Focus change handler
+
+(describe "super-save-focus-change-handler"
+  (it "saves when no frame has focus"
+    (spy-on 'frame-list :and-return-value '(fake-frame))
+    (spy-on 'frame-focus-state :and-return-value nil)
+    (spy-on 'super-save-command)
+    (super-save-focus-change-handler)
+    (expect 'super-save-command :to-have-been-called))
+
+  (it "does not save when a frame has focus"
+    (spy-on 'frame-list :and-return-value '(fake-frame))
+    (spy-on 'frame-focus-state :and-return-value t)
+    (spy-on 'super-save-command)
+    (super-save-focus-change-handler)
+    (expect 'super-save-command :not :to-have-been-called)))
+
 ;;; Trailing whitespace
 
 (describe "super-save-delete-trailing-whitespace-maybe"
@@ -254,11 +350,23 @@
 (describe "super-save-org-src-buffer-p"
   (it "returns nil in a regular buffer"
     (with-temp-buffer
-      (expect (super-save-org-src-buffer-p) :not :to-be-truthy))))
+      (expect (super-save-org-src-buffer-p) :not :to-be-truthy)))
+
+  (it "returns t when org-src-mode is active and org-edit-src-save is available"
+    (with-temp-buffer
+      (setq-local org-src-mode t)
+      (spy-on 'org-edit-src-save)
+      (expect (super-save-org-src-buffer-p) :to-be-truthy))))
 
 (describe "super-save-edit-indirect-buffer-p"
   (it "returns nil in a regular buffer"
     (with-temp-buffer
-      (expect (super-save-edit-indirect-buffer-p) :not :to-be-truthy))))
+      (expect (super-save-edit-indirect-buffer-p) :not :to-be-truthy)))
+
+  (it "returns t when edit-indirect--overlay is set and edit-indirect--commit is available"
+    (with-temp-buffer
+      (setq-local edit-indirect--overlay (make-overlay (point-min) (point-max)))
+      (spy-on 'edit-indirect--commit)
+      (expect (super-save-edit-indirect-buffer-p) :to-be-truthy))))
 
 ;;; super-save-test.el ends here
