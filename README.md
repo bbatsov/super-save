@@ -76,12 +76,12 @@ you really care about its backups):
 
 ## Configuration
 
-super-save will save files on command (e.g. `switch-to-buffer`), hook
-triggers (e.g. `mouse-leave-buffer-hook`), when an Emacs frame loses
-focus, and when switching between buffers or windows.
+super-save will save files when certain events happen:
 
-Both of those are configurable via `super-save-triggers` and
-`super-save-hook-triggers`. Here are a couple of examples:
+- **Command triggers** (e.g. `switch-to-buffer`) — configurable via `super-save-triggers`
+- **Hook triggers** (e.g. `mouse-leave-buffer-hook`) — configurable via `super-save-hook-triggers`
+- **Frame focus loss** — controlled by `super-save-when-focus-lost` (enabled by default)
+- **Buffer/window switches** — controlled by `super-save-when-buffer-switched` (enabled by default)
 
 ```el
 ;; add integration with ace-window
@@ -89,6 +89,12 @@ Both of those are configurable via `super-save-triggers` and
 
 ;; save on find-file
 (add-to-list 'super-save-hook-triggers 'find-file-hook)
+
+;; disable saving on focus loss
+(setq super-save-when-focus-lost nil)
+
+;; disable saving on buffer/window switch
+(setq super-save-when-buffer-switched nil)
 ```
 
 You can turn off `super-save` for remote files like this:
