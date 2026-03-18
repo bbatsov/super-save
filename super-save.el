@@ -38,6 +38,16 @@
 (declare-function org-edit-src-save "org-src" ())
 (declare-function edit-indirect--commit "edit-indirect" ())
 
+(defvar super-save-in-progress nil
+  "Non-nil when a super-save operation is in progress.
+Save hook functions can check this variable to skip expensive
+processing during automatic saves.  For example:
+
+  (add-hook \\='before-save-hook
+            (lambda ()
+              (unless super-save-in-progress
+                (my-expensive-formatting-function))))")
+
 (defgroup super-save nil
   "Smart-saving of buffers."
   :group 'tools
@@ -252,16 +262,24 @@ See `super-save-delete-trailing-whitespace'."
   "Save the relevant buffers if needed.
 
 When `super-save-all-buffers' is non-nil, save all modified buffers, else, save
-only the current buffer."
-  (mapc #'super-save-buffer (if super-save-all-buffers (buffer-list) (list (current-buffer)))))
+only the current buffer.
+
+Binds `super-save-in-progress' to t so that save hook functions can
+detect automatic saves and skip expensive processing."
+  (let ((super-save-in-progress t))
+    (mapc #'super-save-buffer (if super-save-all-buffers (buffer-list) (list (current-buffer))))))
 
 (defun super-save-command-idle ()
   "Save buffers if needed, respecting per-buffer idle save settings.
 
 Like `super-save-command', but skips buffers where the buffer-local
 value of `super-save-auto-save-when-idle' is nil.  This is the
-callback used by the idle timer."
-  (let ((buffers (if super-save-all-buffers (buffer-list) (list (current-buffer)))))
+callback used by the idle timer.
+
+Binds `super-save-in-progress' to t so that save hook functions can
+detect automatic saves and skip expensive processing."
+  (let ((super-save-in-progress t)
+        (buffers (if super-save-all-buffers (buffer-list) (list (current-buffer)))))
     (dolist (buf buffers)
       (when (buffer-local-value 'super-save-auto-save-when-idle buf)
         (super-save-buffer buf)))))

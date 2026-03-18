@@ -213,6 +213,20 @@ and so on.  In these cases, we can indirectly edit several buffers without
 actually visiting or switching to these buffers.  Hence, this option allows you to
 automatically save these buffers, even when they aren't visible in any window.
 
+### Skipping save hooks during auto-save
+
+Some `before-save-hook` or `after-save-hook` functions are expensive (e.g.,
+code formatters, database syncs) and you may not want them running on every
+auto-save. The variable `super-save-in-progress` is bound to `t` during all
+`super-save` operations, so you can use it to guard expensive hooks:
+
+```el
+(add-hook 'before-save-hook
+          (lambda ()
+            (unless super-save-in-progress
+              (my-expensive-formatting-function))))
+```
+
 ## Alternatives and Overlap
 
 Emacs 26.1 introduced `auto-save-visited-mode`, which saves file-visiting

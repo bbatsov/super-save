@@ -6,6 +6,9 @@
 
 - `super-save-auto-save-when-idle` now respects buffer-local values, so idle
   saving can be disabled per buffer or per mode.
+- Add `super-save-in-progress` variable, bound to `t` during auto-save
+  operations.  Save hook functions can check this to skip expensive processing
+  (e.g., code formatters, database syncs) during automatic saves.
 
 ## 0.5.0 (2026-03-18)
 

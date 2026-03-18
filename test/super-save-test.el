@@ -253,6 +253,39 @@
         (expect 'basic-save-buffer :to-have-been-called)
         (expect (buffer-modified-p) :not :to-be-truthy)))))
 
+(describe "super-save-in-progress"
+  (it "is t during super-save-command"
+    (super-save-test-with-temp-file
+      (insert "new content")
+      (let (observed-value)
+        (add-hook 'before-save-hook
+                  (lambda () (setq observed-value super-save-in-progress))
+                  nil t)
+        (super-save-command)
+        (expect observed-value :to-be t))))
+
+  (it "is nil during a normal save"
+    (super-save-test-with-temp-file
+      (insert "new content")
+      (let (observed-value)
+        (add-hook 'before-save-hook
+                  (lambda () (setq observed-value super-save-in-progress))
+                  nil t)
+        (basic-save-buffer)
+        (expect observed-value :not :to-be-truthy))))
+
+  (it "is t during super-save-command-idle"
+    (super-save-test-with-temp-file
+      (insert "new content")
+      (let ((super-save-auto-save-when-idle t)
+            (super-save-all-buffers nil)
+            observed-value)
+        (add-hook 'before-save-hook
+                  (lambda () (setq observed-value super-save-in-progress))
+                  nil t)
+        (super-save-command-idle)
+        (expect observed-value :to-be t)))))
+
 (describe "super-save-command with super-save-all-buffers"
   (it "saves all modified buffers when super-save-all-buffers is t"
     (let ((temp-file-1 (make-temp-file "super-save-test-1"))
