@@ -35,6 +35,9 @@
 
 (require 'seq)
 
+(declare-function org-edit-src-save "org-src" ())
+(declare-function edit-indirect--commit "edit-indirect" ())
+
 (defgroup super-save nil
   "Smart-saving of buffers."
   :group 'tools
@@ -89,8 +92,9 @@ Setting this to t can be interesting when you make indirect buffer edits, like
 when editing `grep' results with `occur-mode' and `occur-edit-mode', or when
 running a project-wide search and replace with `project-query-replace-regexp'
 and so on.  In these cases, we can indirectly edit several buffers without
-actually visiting or switching to these buffers.  Hence, this option allows you to
-automatically save these buffers, even when they aren't visible in any window."
+actually visiting or switching to these buffers.  Hence, this option
+allows you to automatically save these buffers, even when they aren't
+visible in any window."
   :group 'super-save
   :type 'boolean
   :package-version '(super-save . "0.4.0"))
