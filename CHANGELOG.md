@@ -7,6 +7,10 @@
 - Use `after-focus-change-function` instead of the obsolete `focus-out-hook` for
   detecting frame focus loss.  Controlled by the new `super-save-when-focus-lost`
   option (enabled by default).
+- Use `window-buffer-change-functions' and `window-selection-change-functions' to
+  detect buffer and window switches.  Controlled by the new
+  `super-save-when-buffer-switched` option (enabled by default).  This catches all
+  buffer switches regardless of how they happen, unlike `super-save-triggers`.
 
 ### Changes
 

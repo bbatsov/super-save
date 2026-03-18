@@ -65,6 +65,16 @@ Uses `after-focus-change-function' to detect focus changes."
   :type 'boolean
   :package-version '(super-save . "0.5.0"))
 
+(defcustom super-save-when-buffer-switched t
+  "Save buffers when the selected window's buffer changes.
+Uses `window-buffer-change-functions' and
+`window-selection-change-functions' to detect buffer switches.
+This catches all buffer switches regardless of how they happen,
+unlike `super-save-triggers' which only catches specific commands."
+  :group 'super-save
+  :type 'boolean
+  :package-version '(super-save . "0.5.0"))
+
 (defcustom super-save-auto-save-when-idle nil
   "Save automatically when Emacs is idle."
   :group 'super-save
@@ -230,6 +240,12 @@ only the current buffer."
     (unless (frame-focus-state frame)
       (super-save-command))))
 
+(defun super-save-window-change-handler (&optional _frame)
+  "Save buffers when the window buffer or selection changes.
+Intended for use with `window-buffer-change-functions' and
+`window-selection-change-functions'."
+  (super-save-command))
+
 (defun super-save-initialize ()
   "Setup super-save's advice and hooks."
   (super-save-advise-trigger-commands)
@@ -238,7 +254,10 @@ only the current buffer."
     (add-hook hook #'super-save-command))
   (when super-save-when-focus-lost
     (add-function :after after-focus-change-function
-                  #'super-save-focus-change-handler)))
+                  #'super-save-focus-change-handler))
+  (when super-save-when-buffer-switched
+    (add-hook 'window-buffer-change-functions #'super-save-window-change-handler)
+    (add-hook 'window-selection-change-functions #'super-save-window-change-handler)))
 
 (defun super-save-stop ()
   "Cleanup super-save's advice and hooks."
@@ -247,7 +266,9 @@ only the current buffer."
   (dolist (hook super-save-hook-triggers)
     (remove-hook hook #'super-save-command))
   (remove-function after-focus-change-function
-                   #'super-save-focus-change-handler))
+                   #'super-save-focus-change-handler)
+  (remove-hook 'window-buffer-change-functions #'super-save-window-change-handler)
+  (remove-hook 'window-selection-change-functions #'super-save-window-change-handler))
 
 ;;;###autoload
 (define-minor-mode super-save-mode
