@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+- Require Emacs 27.1.
+
 ## 0.4.0 (2023-12-09)
 
 ### New features

@@ -6,7 +6,7 @@
 ;; URL: https://github.com/bbatsov/super-save
 ;; Keywords: convenience
 ;; Version: 0.4.0
-;; Package-Requires: ((emacs "25.1"))
+;; Package-Requires: ((emacs "27.1"))
 
 ;; This file is NOT part of GNU Emacs.
 
