@@ -87,23 +87,23 @@ you really care about its backups):
 
 super-save will save files when certain events happen:
 
-- **Command triggers** (e.g. `switch-to-buffer`) — configurable via `super-save-triggers`
-- **Hook triggers** (e.g. `mouse-leave-buffer-hook`) — configurable via `super-save-hook-triggers`
 - **Frame focus loss** — controlled by `super-save-when-focus-lost` (enabled by default)
 - **Buffer/window switches** — controlled by `super-save-when-buffer-switched` (enabled by default)
+- **Command triggers** — configurable via `super-save-triggers` (empty by default, since the window-system hooks above already catch all buffer switches)
+- **Hook triggers** — configurable via `super-save-hook-triggers` (empty by default)
 
 ```el
-;; add integration with ace-window
-(add-to-list 'super-save-triggers 'ace-window)
-
-;; save on find-file
-(add-to-list 'super-save-hook-triggers 'find-file-hook)
-
 ;; disable saving on focus loss
 (setq super-save-when-focus-lost nil)
 
 ;; disable saving on buffer/window switch
 (setq super-save-when-buffer-switched nil)
+
+;; add a command trigger (useful for commands that don't involve a buffer switch)
+(add-to-list 'super-save-triggers 'ace-window)
+
+;; add a hook trigger
+(add-to-list 'super-save-hook-triggers 'find-file-hook)
 ```
 
 You can turn off `super-save` for remote files like this:

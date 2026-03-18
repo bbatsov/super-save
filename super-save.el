@@ -40,20 +40,21 @@
   :group 'tools
   :group 'convenience)
 
-(defvar super-save-mode-map
-  (make-sparse-keymap)
-  "super-save mode's keymap.")
-
-(defcustom super-save-triggers
-  '(switch-to-buffer other-window windmove-up windmove-down windmove-left windmove-right next-buffer previous-buffer)
-  "A list of commands which would trigger `super-save-command'."
+(defcustom super-save-triggers nil
+  "A list of commands which would trigger `super-save-command'.
+With `super-save-when-buffer-switched' enabled (the default), the
+window-system hooks already catch all buffer switches, so this list
+defaults to nil.  You can still add commands here for triggers that
+don't involve a buffer switch (e.g. `ace-window')."
   :group 'super-save
   :type '(repeat symbol)
   :package-version '(super-save . "0.1.0"))
 
-(defcustom super-save-hook-triggers
-  '(mouse-leave-buffer-hook)
-  "A list of hooks which would trigger `super-save-command'."
+(defcustom super-save-hook-triggers nil
+  "A list of hooks which would trigger `super-save-command'.
+With `super-save-when-buffer-switched' and `super-save-when-focus-lost'
+enabled (the defaults), this list defaults to nil as those options cover
+the common triggers."
   :group 'super-save
   :type '(repeat symbol)
   :package-version '(super-save . "0.3.0"))
@@ -328,7 +329,6 @@ duplicate saves when both hooks fire for the same event."
 (define-minor-mode super-save-mode
   "A minor mode that saves your Emacs buffers when they lose focus."
   :lighter " super-save"
-  :keymap super-save-mode-map
   :group 'super-save
   :global t
   (cond

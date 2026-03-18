@@ -40,15 +40,17 @@
     (expect super-save-mode :not :to-be-truthy))
 
   (it "advises trigger commands when enabled"
-    (super-save-mode +1)
-    (expect (advice-member-p #'super-save-command-advice 'switch-to-buffer)
-            :to-be-truthy))
+    (let ((super-save-triggers '(switch-to-buffer)))
+      (super-save-mode +1)
+      (expect (advice-member-p #'super-save-command-advice 'switch-to-buffer)
+              :to-be-truthy)))
 
   (it "removes advice from trigger commands when disabled"
-    (super-save-mode +1)
-    (super-save-mode -1)
-    (expect (advice-member-p #'super-save-command-advice 'switch-to-buffer)
-            :not :to-be-truthy))
+    (let ((super-save-triggers '(switch-to-buffer)))
+      (super-save-mode +1)
+      (super-save-mode -1)
+      (expect (advice-member-p #'super-save-command-advice 'switch-to-buffer)
+              :not :to-be-truthy)))
 
   (it "registers window-change hooks when super-save-when-buffer-switched is t"
     (let ((super-save-when-buffer-switched t))

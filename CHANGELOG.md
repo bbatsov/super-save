@@ -25,7 +25,10 @@
 ### Changes
 
 - Require Emacs 27.1.
-- Remove `focus-out-hook` from the default `super-save-hook-triggers`.
+- Default `super-save-triggers` to nil, since `super-save-when-buffer-switched`
+  now covers all buffer switches via window-system hooks.
+- Default `super-save-hook-triggers` to nil, since `super-save-when-focus-lost`
+  and `super-save-when-buffer-switched` cover the common triggers.
 
 ## 0.4.0 (2023-12-09)
 
