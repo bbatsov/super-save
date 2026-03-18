@@ -286,10 +286,9 @@ only the current buffer."
   (when super-save-idle-timer (cancel-timer super-save-idle-timer)))
 
 (defun super-save-focus-change-handler ()
-  "Save buffers when any Emacs frame loses focus."
-  (dolist (frame (frame-list))
-    (unless (frame-focus-state frame)
-      (super-save-command))))
+  "Save buffers when Emacs loses focus (no frame is focused)."
+  (unless (seq-some #'frame-focus-state (frame-list))
+    (super-save-command)))
 
 (defvar super-save--window-change-pending nil
   "Non-nil when a window-change save is already scheduled for this command loop.")
