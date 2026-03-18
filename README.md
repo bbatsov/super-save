@@ -67,6 +67,13 @@ is idle, add the following as well:
 (setq super-save-auto-save-when-idle t)
 ```
 
+By default the idle delay is 5 seconds. You can change it via
+`super-save-idle-duration`:
+
+```el
+(setq super-save-idle-duration 10)
+```
+
 At this point you can probably switch off the built-in `auto-save-mode` (unless
 you really care about its backups):
 
