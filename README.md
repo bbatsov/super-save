@@ -204,6 +204,29 @@ and so on.  In these cases, we can indirectly edit several buffers without
 actually visiting or switching to these buffers.  Hence, this option allows you to
 automatically save these buffers, even when they aren't visible in any window.
 
+## Alternatives and Overlap
+
+Emacs 26.1 introduced `auto-save-visited-mode`, which saves file-visiting
+buffers to their actual files after a configurable idle delay
+(`auto-save-visited-interval`, default 5 seconds). This overlaps directly with
+`super-save`'s `super-save-auto-save-when-idle` feature, so there's no need to
+enable both. If idle saving is all you need, the built-in mode might be enough.
+
+Where `super-save` goes further is event-driven saving — it saves immediately
+when you switch buffers, switch windows, or leave Emacs, rather than waiting for
+an idle timeout. It also provides a predicate system for fine-grained control
+(max buffer size, exclude patterns, remote file handling, external modification
+checks), silent saving, trailing whitespace cleanup, and special handling for
+`org-src` and `edit-indirect` buffers.
+
+A common setup is to use `super-save` for event-driven saves and
+`auto-save-visited-mode` for idle saves:
+
+```el
+(super-save-mode +1)
+(auto-save-visited-mode +1)
+```
+
 ## License
 
 Copyright © 2015-2026 Bozhidar Batsov and [contributors][].
