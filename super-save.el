@@ -191,11 +191,57 @@ See `super-save-delete-trailing-whitespace'."
    (super-save-delete-trailing-whitespace
     (delete-trailing-whitespace))))
 
+(defcustom super-save-handle-org-src t
+  "Save org-src edit buffers using `org-edit-src-save'."
+  :group 'super-save
+  :type 'boolean
+  :package-version '(super-save . "0.5.0"))
+
+(defcustom super-save-handle-edit-indirect t
+  "Save edit-indirect buffers using `edit-indirect--commit'."
+  :group 'super-save
+  :type 'boolean
+  :package-version '(super-save . "0.5.0"))
+
+(defun super-save-org-src-buffer-p ()
+  "Return non-nil if the current buffer is an org-src edit buffer."
+  (and (bound-and-true-p org-src-mode)
+       (fboundp 'org-edit-src-save)))
+
+(defun super-save-edit-indirect-buffer-p ()
+  "Return non-nil if the current buffer is an edit-indirect buffer."
+  (and (bound-and-true-p edit-indirect--overlay)
+       (fboundp 'edit-indirect--commit)))
+
 (defun super-save-buffer (buffer)
   "Save BUFFER if needed, super-save style."
   (with-current-buffer buffer
     (save-excursion
-      (when (super-save-p)
+      (cond
+       ;; org-src edit buffer
+       ((and super-save-handle-org-src
+             (super-save-org-src-buffer-p)
+             (buffer-modified-p))
+        (if super-save-silent
+            (with-temp-message ""
+              (let ((inhibit-message t)
+                    (inhibit-redisplay t)
+                    (message-log-max nil))
+                (org-edit-src-save)))
+          (org-edit-src-save)))
+       ;; edit-indirect buffer
+       ((and super-save-handle-edit-indirect
+             (super-save-edit-indirect-buffer-p)
+             (buffer-modified-p))
+        (if super-save-silent
+            (with-temp-message ""
+              (let ((inhibit-message t)
+                    (inhibit-redisplay t)
+                    (message-log-max nil))
+                (edit-indirect--commit)))
+          (edit-indirect--commit)))
+       ;; regular file buffer
+       ((super-save-p)
         (super-save-delete-trailing-whitespace-maybe)
         (if super-save-silent
             (with-temp-message ""
@@ -203,7 +249,7 @@ See `super-save-delete-trailing-whitespace'."
                     (inhibit-redisplay t)
                     (message-log-max nil))
                 (basic-save-buffer)))
-          (basic-save-buffer))))))
+          (basic-save-buffer)))))))
 
 (defun super-save-command ()
   "Save the relevant buffers if needed.

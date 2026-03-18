@@ -135,6 +135,19 @@ deleting trailing white spaces before saving (via Emacs'
 (setq super-save-delete-trailing-whitespace 'except-current-line)
 ```
 
+### org-src and edit-indirect buffers
+
+`super-save` can save `org-src` edit buffers (using `org-edit-src-save`) and
+`edit-indirect` buffers (using `edit-indirect--commit`). Both are enabled by
+default and can be disabled:
+
+```el
+(setq super-save-handle-org-src nil)
+(setq super-save-handle-edit-indirect nil)
+```
+
+### Saving all buffers
+
 By default, `super-save` will automatically save only the current buffer, if you
 want to save all open buffers you can set `super-save-all-buffers` to `t`.
 

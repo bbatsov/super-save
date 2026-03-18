@@ -13,6 +13,10 @@
   to prevent errors when a file's directory has been removed.
 - Wrap predicate evaluation in `condition-case` so a broken predicate logs a
   warning instead of disabling all auto-saving.
+- Add support for saving `org-src` edit buffers (via `org-edit-src-save`) and
+  `edit-indirect` buffers (via `edit-indirect--commit`).  Controlled by
+  `super-save-handle-org-src` and `super-save-handle-edit-indirect` (both
+  enabled by default).
 - Use `window-buffer-change-functions' and `window-selection-change-functions' to
   detect buffer and window switches.  Controlled by the new
   `super-save-when-buffer-switched` option (enabled by default).  This catches all
