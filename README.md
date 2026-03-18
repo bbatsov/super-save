@@ -9,6 +9,8 @@
 between buffers, an Emacs frame loses focus, etc. You can think of it as both
 something that augments and replaces the standard `auto-save-mode`.
 
+**This package requires Emacs 27.1+.**
+
 ## Installation
 
 Available on all major `package.el` community maintained repos - [MELPA
