@@ -5,7 +5,7 @@
 
 # super-save
 
-`super-save` auto-saves your buffers, when certain events happen - e.g. you switch
+`super-save` auto-saves your buffers when certain events happen - e.g. you switch
 between buffers, an Emacs frame loses focus, etc. You can think of it as both
 something that augments and replaces the standard `auto-save-mode`.
 
@@ -80,7 +80,7 @@ super-save will save files on command (e.g. `switch-to-buffer`) and hook
 triggers (e.g. `focus-out-hook`).
 
 Both of those are configurable via `super-save-triggers` and
-`super-save-hook-triggers`. Here's a couple of examples:
+`super-save-hook-triggers`. Here are a couple of examples:
 
 ```el
 ;; add integration with ace-window
@@ -103,10 +103,10 @@ achieve this via `super-save-exclude`, for example:
 (setq super-save-exclude '(".gpg"))
 ```
 
-You can add predicate to `super-save-predicates`, this predicates must not take
-arguments and return nil, when current buffer shouldn't save. If predicate don't
-know needle of save file, then predicate must return t. Following example stop
-`super-save`, when current file in Markdown mode:
+You can add a predicate to `super-save-predicates`. These predicates must not take
+arguments and return nil when the current buffer shouldn't be saved. If a predicate
+doesn't know whether the buffer needs to be saved, it must return t. The following
+example stops `super-save` when the current buffer is in Markdown mode:
 
 ```el
 (add-to-list 'super-save-predicates (lambda ()
@@ -141,7 +141,7 @@ Setting this to `t` can be interesting when you make indirect buffer edits, like
 when editing `grep`s results with `occur-mode` and `occur-edit-mode`, or when
 running a project-wide search and replace with `project-query-replace-regexp`
 and so on.  In these cases, we can indirectly edit several buffers without
-actually visiting or switching to these buffers.  Hence, this option allow to
+actually visiting or switching to these buffers.  Hence, this option allows you to
 automatically save these buffers, even when they aren't visible in any window.
 
 ## License
